@@ -1,47 +1,53 @@
 import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const role = searchParams.get("role") || "student";
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        navigate("/");
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_IN") {
+          navigate("/dashboard");
+        }
       }
-    });
+    );
 
     return () => subscription.unsubscribe();
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight">Welcome to AfriQuest AI Academy</h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Sign in to start your learning journey
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            {role === "student"
+              ? "Start Your Learning Journey"
+              : "Support Your Student's Growth"}
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            {role === "student"
+              ? "Sign up to access AI tutors and interactive lessons"
+              : "Sign up to track and support student progress"}
           </p>
         </div>
-        <div className="bg-white p-8 shadow-lg rounded-lg">
-          <SupabaseAuth 
+
+        <div className="mt-8">
+          <SupabaseAuth
             supabaseClient={supabase}
-            appearance={{
-              theme: ThemeSupa,
-              variables: {
-                default: {
-                  colors: {
-                    brand: '#2563eb',
-                    brandAccent: '#1d4ed8',
-                  },
-                },
-              },
+            appearance={{ theme: ThemeSupa }}
+            providers={["google"]}
+            redirectTo={`${window.location.origin}/dashboard`}
+            view="magic_link"
+            showLinks={false}
+            additionalData={{
+              role: role,
             }}
-            providers={[]}
           />
         </div>
       </div>

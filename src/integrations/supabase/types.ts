@@ -11,36 +11,92 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          age: number | null
           avatar_url: string | null
+          country: string | null
           created_at: string
           education_level: string | null
           full_name: string | null
+          grade_level: string | null
           id: string
           role: string | null
+          student_ids: string[] | null
+          subjects_of_interest: string[] | null
           updated_at: string
           username: string | null
         }
         Insert: {
+          age?: number | null
           avatar_url?: string | null
+          country?: string | null
           created_at?: string
           education_level?: string | null
           full_name?: string | null
+          grade_level?: string | null
           id: string
           role?: string | null
+          student_ids?: string[] | null
+          subjects_of_interest?: string[] | null
           updated_at?: string
           username?: string | null
         }
         Update: {
+          age?: number | null
           avatar_url?: string | null
+          country?: string | null
           created_at?: string
           education_level?: string | null
           full_name?: string | null
+          grade_level?: string | null
           id?: string
           role?: string | null
+          student_ids?: string[] | null
+          subjects_of_interest?: string[] | null
           updated_at?: string
           username?: string | null
         }
         Relationships: []
+      }
+      student_progress: {
+        Row: {
+          badges: string[] | null
+          created_at: string
+          id: string
+          level: number | null
+          points: number | null
+          student_id: string | null
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          badges?: string[] | null
+          created_at?: string
+          id?: string
+          level?: number | null
+          points?: number | null
+          student_id?: string | null
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          badges?: string[] | null
+          created_at?: string
+          id?: string
+          level?: number | null
+          points?: number | null
+          student_id?: string | null
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_progress_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
