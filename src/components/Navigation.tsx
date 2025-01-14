@@ -1,17 +1,45 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      subscription.unsubscribe();
+    };
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success("Logged out successfully");
+      navigate("/auth");
+    } catch (error) {
+      toast.error("Error logging out");
+    }
+  };
+
+  const handleLogin = () => {
+    navigate("/auth");
+  };
 
   return (
     <nav
@@ -22,7 +50,7 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
-            <span className="text-xl font-semibold">Logo</span>
+            <span className="text-xl font-semibold">AfriQuest</span>
           </div>
           
           {/* Desktop Navigation */}
@@ -36,6 +64,18 @@ const Navigation = () => {
             <a href="#contact" className="text-gray-700 hover:text-primary transition-colors">
               Contact
             </a>
+            {user ? (
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            ) : (
+              <Button onClick={handleLogin}>Sign In</Button>
+            )}
           </div>
 
           {/* Mobile Navigation Button */}
@@ -74,6 +114,29 @@ const Navigation = () => {
               >
                 Contact
               </a>
+              {user ? (
+                <Button
+                  variant="outline"
+                  className="w-full justify-center"
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Button>
+              ) : (
+                <Button
+                  className="w-full"
+                  onClick={() => {
+                    handleLogin();
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  Sign In
+                </Button>
+              )}
             </div>
           </div>
         )}
