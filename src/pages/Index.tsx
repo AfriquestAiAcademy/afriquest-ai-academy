@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Brain, Robot, Trophy } from "lucide-react";
+import { ArrowRight, BookOpen, Brain, Bot, Trophy } from "lucide-react";
 
 const features = [
   {
@@ -16,7 +16,7 @@ const features = [
     description: "Fun, interactive lessons and quizzes that test your knowledge and help you learn better.",
   },
   {
-    icon: <Robot className="h-12 w-12 text-primary" />,
+    icon: <Bot className="h-12 w-12 text-primary" />,
     title: "Homework Assistant",
     description: "Upload your homework and textbooks for AI-powered support on assignments.",
   },
