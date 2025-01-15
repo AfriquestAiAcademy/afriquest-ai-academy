@@ -31,30 +31,40 @@ const baseSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string()
-}).superRefine((data, ctx) => {
-  if (data.password !== data.confirmPassword) {
-    ctx.addIssue({
-      code: "custom",
-      message: "Passwords don't match",
-      path: ["confirmPassword"],
-    });
-  }
 });
 
-const studentSchema = z.object({
-  ...baseSchema.shape,
-  gradeLevel: z.string().min(1, "Please select a grade level"),
-});
+const withPasswordValidation = (schema: z.ZodObject<any, any>) => {
+  return schema.superRefine((data, ctx) => {
+    if (data.password !== data.confirmPassword) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Passwords don't match",
+        path: ["confirmPassword"],
+      });
+    }
+  });
+};
 
-const educatorSchema = z.object({
-  ...baseSchema.shape,
-  subjectsTaught: z.string().min(1, "Please enter subjects taught"),
-});
+const studentSchema = withPasswordValidation(
+  z.object({
+    ...baseSchema.shape,
+    gradeLevel: z.string().min(1, "Please select a grade level"),
+  })
+);
 
-const parentSchema = z.object({
-  ...baseSchema.shape,
-  childDetails: z.string().min(10, "Please provide details about your child"),
-});
+const educatorSchema = withPasswordValidation(
+  z.object({
+    ...baseSchema.shape,
+    subjectsTaught: z.string().min(1, "Please enter subjects taught"),
+  })
+);
+
+const parentSchema = withPasswordValidation(
+  z.object({
+    ...baseSchema.shape,
+    childDetails: z.string().min(10, "Please provide details about your child"),
+  })
+);
 
 interface SignUpFormsProps {
   onToggleForm: () => void;
@@ -450,3 +460,4 @@ const SignUpForms = ({ onToggleForm }: SignUpFormsProps) => {
 };
 
 export default SignUpForms;
+
