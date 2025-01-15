@@ -34,28 +34,33 @@ import GradeLevelSelect from "@/components/auth/GradeLevelSelect";
 import PasswordFields from "@/components/auth/PasswordFields";
 import SignInForm from "@/components/auth/SignInForm";
 
-const passwordSchema = z.object({
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
-
 const baseSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-}).merge(passwordSchema);
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string()
+}).superRefine((data, ctx) => {
+  if (data.password !== data.confirmPassword) {
+    ctx.addIssue({
+      code: "custom",
+      message: "Passwords don't match",
+      path: ["confirmPassword"],
+    });
+  }
+});
 
-const studentSchema = baseSchema.extend({
+const studentSchema = z.object({
+  ...baseSchema.shape,
   gradeLevel: z.string().min(1, "Please select a grade level"),
 });
 
-const educatorSchema = baseSchema.extend({
+const educatorSchema = z.object({
+  ...baseSchema.shape,
   subjectsTaught: z.string().min(1, "Please enter subjects taught"),
 });
 
-const parentSchema = baseSchema.extend({
+const parentSchema = z.object({
+  ...baseSchema.shape,
   childDetails: z.string().min(10, "Please provide details about your child"),
 });
 
