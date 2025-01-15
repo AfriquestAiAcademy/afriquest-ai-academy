@@ -15,6 +15,7 @@ import PasswordFields from "./PasswordFields";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { AuthError, AuthApiError } from "@supabase/supabase-js";
 
 const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -35,6 +36,27 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
     },
   });
 
+  const getErrorMessage = (error: AuthError) => {
+    if (error instanceof AuthApiError) {
+      switch (error.status) {
+        case 400:
+          switch (error.message) {
+            case "Invalid login credentials":
+              return "Invalid email or password. Please check your credentials and try again.";
+            case "Email not confirmed":
+              return "Please verify your email address before signing in.";
+            default:
+              return error.message;
+          }
+        case 422:
+          return "Invalid email or password format.";
+        default:
+          return "An error occurred during sign in. Please try again.";
+      }
+    }
+    return error.message;
+  };
+
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     try {
       const { error } = await supabase.auth.signInWithPassword({
@@ -42,12 +64,17 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
         password: data.password,
       });
 
-      if (error) throw error;
+      if (error) {
+        const errorMessage = getErrorMessage(error);
+        toast.error(errorMessage);
+        return;
+      }
 
       toast.success("Signed in successfully!");
       navigate("/");
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error("An unexpected error occurred. Please try again.");
+      console.error("Sign in error:", error);
     }
   };
 
