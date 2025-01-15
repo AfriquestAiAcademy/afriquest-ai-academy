@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, X, LogOut } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -50,7 +50,9 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
-            <span className="text-xl font-semibold">AfriQuest</span>
+            <Link to="/" className="text-xl font-semibold hover:text-primary transition-colors">
+              AfriQuest
+            </Link>
           </div>
           
           {/* Desktop Navigation */}

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -11,6 +12,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import PasswordFields from "./PasswordFields";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -22,17 +31,30 @@ const signInSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
+const resetPasswordSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
 interface SignInFormProps {
   onToggleForm: () => void;
 }
 
 const SignInForm = ({ onToggleForm }: SignInFormProps) => {
   const navigate = useNavigate();
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  
   const form = useForm({
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
       password: "",
+    },
+  });
+
+  const resetForm = useForm({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      email: "",
     },
   });
 
@@ -78,6 +100,21 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
     }
   };
 
+  const handleResetPassword = async (data: z.infer<typeof resetPasswordSchema>) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+        redirectTo: `${window.location.origin}/auth?reset=true`,
+      });
+
+      if (error) throw error;
+
+      toast.success("Password reset instructions have been sent to your email.");
+      setIsResetDialogOpen(false);
+    } catch (error: any) {
+      toast.error("Failed to send reset instructions. Please try again.");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Form {...form}>
@@ -96,6 +133,43 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
             )}
           />
           <PasswordFields control={form.control} />
+          <div className="flex justify-end">
+            <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="link" className="px-0" type="button">
+                  Forgot password?
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Reset Password</DialogTitle>
+                  <DialogDescription>
+                    Enter your email address and we'll send you instructions to reset your password.
+                  </DialogDescription>
+                </DialogHeader>
+                <Form {...resetForm}>
+                  <form onSubmit={resetForm.handleSubmit(handleResetPassword)} className="space-y-4">
+                    <FormField
+                      control={resetForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="john@example.com" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="w-full">
+                      Send Reset Instructions
+                    </Button>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+          </div>
           <Button type="submit" className="w-full">
             Sign In
           </Button>

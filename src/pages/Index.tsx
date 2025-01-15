@@ -76,7 +76,7 @@ const Index = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative pt-20 pb-32 overflow-hidden">
+      <section className="relative pt-32 pb-32 overflow-hidden">
         <div className="container px-4 mx-auto">
           <div className="flex flex-wrap items-center -mx-4">
             <div className="w-full lg:w-1/2 px-4 mb-12 lg:mb-0">
@@ -90,7 +90,7 @@ const Index = () => {
               <div className="flex flex-wrap gap-4">
                 <Button
                   size="lg"
-                  onClick={() => navigate("/auth?role=student")}
+                  onClick={() => navigate("/auth?tab=student")}
                   className="inline-flex items-center"
                 >
                   Sign Up as Student
@@ -99,14 +99,14 @@ const Index = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  onClick={() => navigate("/auth?role=educator")}
+                  onClick={() => navigate("/auth?tab=educator")}
                 >
                   Sign Up as Educator
                 </Button>
                 <Button
                   size="lg"
                   variant="outline"
-                  onClick={() => navigate("/auth?role=parent")}
+                  onClick={() => navigate("/auth?tab=parent")}
                 >
                   Sign Up as Parent
                 </Button>
