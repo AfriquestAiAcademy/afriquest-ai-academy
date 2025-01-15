@@ -75,9 +75,10 @@ const parentSchema = withPasswordValidation(
 
 interface SignUpFormsProps {
   onToggleForm: () => void;
+  defaultTab?: string;
 }
 
-const SignUpForms = ({ onToggleForm }: SignUpFormsProps) => {
+const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -159,7 +160,7 @@ const SignUpForms = ({ onToggleForm }: SignUpFormsProps) => {
   };
 
   return (
-    <Tabs defaultValue="student" className="space-y-6">
+    <Tabs defaultValue={defaultTab} className="space-y-6">
       <TabsList className="grid w-full grid-cols-4">
         <TabsTrigger value="student">Student</TabsTrigger>
         <TabsTrigger value="educator">Educator</TabsTrigger>
