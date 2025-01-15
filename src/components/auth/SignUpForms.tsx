@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,7 +13,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -23,43 +20,47 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import AuthLayout from "@/components/auth/AuthLayout";
-import GradeLevelSelect from "@/components/auth/GradeLevelSelect";
-import PasswordFields from "@/components/auth/PasswordFields";
-import SignInForm from "@/components/auth/SignInForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import GradeLevelSelect from "./GradeLevelSelect";
 
-const baseSchema = z.object({
+const passwordSchema = z
+  .object({
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+const studentSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
-
-const studentSchema = baseSchema.extend({
   gradeLevel: z.string().min(1, "Please select a grade level"),
-});
+}).merge(passwordSchema);
 
-const educatorSchema = baseSchema.extend({
+const educatorSchema = z.object({
+  fullName: z.string().min(2, "Full name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
   subjectsTaught: z.string().min(1, "Please enter subjects taught"),
-});
+}).merge(passwordSchema);
 
-const parentSchema = baseSchema.extend({
+const parentSchema = z.object({
+  fullName: z.string().min(2, "Full name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
   childDetails: z.string().min(10, "Please provide details about your child"),
-});
+}).merge(passwordSchema);
 
-const Auth = () => {
-  const navigate = useNavigate();
+interface SignUpFormsProps {
+  onToggleForm: () => void;
+}
+
+const SignUpForms = ({ onToggleForm }: SignUpFormsProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [showSignIn, setShowSignIn] = useState(true);
+  const navigate = useNavigate();
 
   const studentForm = useForm({
     resolver: zodResolver(studentSchema),
@@ -114,7 +115,6 @@ const Auth = () => {
       if (error) throw error;
 
       toast.success("Sign up successful! Please check your email to verify your account.");
-      setShowSignIn(true);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -122,7 +122,7 @@ const Auth = () => {
     }
   };
 
-  const renderSignUpForms = () => (
+  return (
     <Tabs defaultValue="student" className="space-y-6">
       <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="student">Student</TabsTrigger>
@@ -140,7 +140,12 @@ const Auth = () => {
           </CardHeader>
           <CardContent>
             <Form {...studentForm}>
-              <form onSubmit={studentForm.handleSubmit((data) => handleSignUp(data, 'student'))} className="space-y-4">
+              <form
+                onSubmit={studentForm.handleSubmit((data) =>
+                  handleSignUp(data, "student")
+                )}
+                className="space-y-4"
+              >
                 <FormField
                   control={studentForm.control}
                   name="fullName"
@@ -161,23 +166,62 @@ const Auth = () => {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="john@example.com" {...field} />
+                        <Input
+                          type="email"
+                          placeholder="john@example.com"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <PasswordFields control={studentForm.control} isSignUp />
+                <FormField
+                  control={studentForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={studentForm.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={studentForm.control}
                   name="gradeLevel"
                   render={({ field }) => (
-                    <GradeLevelSelect control={studentForm.control} name={field.name} />
+                    <GradeLevelSelect control={studentForm.control} name="gradeLevel" />
                   )}
                 />
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Signing up..." : "Sign Up as Student"}
                 </Button>
+                <p className="text-center text-sm text-gray-600">
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={onToggleForm}
+                    className="text-primary hover:underline"
+                  >
+                    Sign in
+                  </button>
+                </p>
               </form>
             </Form>
           </CardContent>
@@ -194,7 +238,12 @@ const Auth = () => {
           </CardHeader>
           <CardContent>
             <Form {...educatorForm}>
-              <form onSubmit={educatorForm.handleSubmit((data) => handleSignUp(data, 'teacher'))} className="space-y-4">
+              <form
+                onSubmit={educatorForm.handleSubmit((data) =>
+                  handleSignUp(data, "teacher")
+                )}
+                className="space-y-4"
+              >
                 <FormField
                   control={educatorForm.control}
                   name="fullName"
@@ -215,13 +264,42 @@ const Auth = () => {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="john@example.com" {...field} />
+                        <Input
+                          type="email"
+                          placeholder="john@example.com"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <PasswordFields control={educatorForm.control} isSignUp />
+                <FormField
+                  control={educatorForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={educatorForm.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={educatorForm.control}
                   name="subjectsTaught"
@@ -229,7 +307,10 @@ const Auth = () => {
                     <FormItem>
                       <FormLabel>Subjects Taught</FormLabel>
                       <FormControl>
-                        <Input placeholder="Math, Science, English" {...field} />
+                        <Input
+                          placeholder="Math, Science, English"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -238,6 +319,16 @@ const Auth = () => {
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Signing up..." : "Sign Up as Educator"}
                 </Button>
+                <p className="text-center text-sm text-gray-600">
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={onToggleForm}
+                    className="text-primary hover:underline"
+                  >
+                    Sign in
+                  </button>
+                </p>
               </form>
             </Form>
           </CardContent>
@@ -249,12 +340,18 @@ const Auth = () => {
           <CardHeader>
             <CardTitle>Parent Sign Up</CardTitle>
             <CardDescription>
-              Create an account to monitor and support your child's learning journey
+              Create an account to monitor and support your child's learning
+              journey
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...parentForm}>
-              <form onSubmit={parentForm.handleSubmit((data) => handleSignUp(data, 'parent'))} className="space-y-4">
+              <form
+                onSubmit={parentForm.handleSubmit((data) =>
+                  handleSignUp(data, "parent")
+                )}
+                className="space-y-4"
+              >
                 <FormField
                   control={parentForm.control}
                   name="fullName"
@@ -275,13 +372,42 @@ const Auth = () => {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="john@example.com" {...field} />
+                        <Input
+                          type="email"
+                          placeholder="john@example.com"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <PasswordFields control={parentForm.control} isSignUp />
+                <FormField
+                  control={parentForm.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={parentForm.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={parentForm.control}
                   name="childDetails"
@@ -289,7 +415,7 @@ const Auth = () => {
                     <FormItem>
                       <FormLabel>Child Details</FormLabel>
                       <FormControl>
-                        <Textarea 
+                        <Textarea
                           placeholder="Please provide your child's name, age, and grade level"
                           className="min-h-[100px]"
                           {...field}
@@ -302,6 +428,16 @@ const Auth = () => {
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Signing up..." : "Sign Up as Parent"}
                 </Button>
+                <p className="text-center text-sm text-gray-600">
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={onToggleForm}
+                    className="text-primary hover:underline"
+                  >
+                    Sign in
+                  </button>
+                </p>
               </form>
             </Form>
           </CardContent>
@@ -309,36 +445,6 @@ const Auth = () => {
       </TabsContent>
     </Tabs>
   );
-
-  return (
-    <AuthLayout>
-      {showSignIn ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Welcome Back</CardTitle>
-            <CardDescription>
-              Sign in to continue your learning journey
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <SignInForm onToggleForm={() => setShowSignIn(false)} />
-          </CardContent>
-        </Card>
-      ) : (
-        <>
-          {renderSignUpForms()}
-          <div className="text-center mt-6">
-            <p className="text-sm text-gray-600">
-              Already have an account?{" "}
-              <Button variant="link" className="p-0" onClick={() => setShowSignIn(true)}>
-                Sign in
-              </Button>
-            </p>
-          </div>
-        </>
-      )}
-    </AuthLayout>
-  );
 };
 
-export default Auth;
+export default SignUpForms;
