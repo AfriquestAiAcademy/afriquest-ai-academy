@@ -26,33 +26,30 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import GradeLevelSelect from "./GradeLevelSelect";
 
-const passwordSchema = z
-  .object({
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
+const passwordSchema = z.object({
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
 
-const studentSchema = z.object({
+const baseSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
+}).merge(passwordSchema);
+
+const studentSchema = baseSchema.extend({
   gradeLevel: z.string().min(1, "Please select a grade level"),
-}).merge(passwordSchema);
+});
 
-const educatorSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
+const educatorSchema = baseSchema.extend({
   subjectsTaught: z.string().min(1, "Please enter subjects taught"),
-}).merge(passwordSchema);
+});
 
-const parentSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
+const parentSchema = baseSchema.extend({
   childDetails: z.string().min(10, "Please provide details about your child"),
-}).merge(passwordSchema);
+});
 
 interface SignUpFormsProps {
   onToggleForm: () => void;
