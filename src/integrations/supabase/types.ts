@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           age: number | null
           avatar_url: string | null
+          child_details: Json | null
           country: string | null
           created_at: string
           education_level: string | null
@@ -22,12 +23,14 @@ export type Database = {
           role: string | null
           student_ids: string[] | null
           subjects_of_interest: string[] | null
+          subjects_taught: string[] | null
           updated_at: string
           username: string | null
         }
         Insert: {
           age?: number | null
           avatar_url?: string | null
+          child_details?: Json | null
           country?: string | null
           created_at?: string
           education_level?: string | null
@@ -37,12 +40,14 @@ export type Database = {
           role?: string | null
           student_ids?: string[] | null
           subjects_of_interest?: string[] | null
+          subjects_taught?: string[] | null
           updated_at?: string
           username?: string | null
         }
         Update: {
           age?: number | null
           avatar_url?: string | null
+          child_details?: Json | null
           country?: string | null
           created_at?: string
           education_level?: string | null
@@ -52,6 +57,7 @@ export type Database = {
           role?: string | null
           student_ids?: string[] | null
           subjects_of_interest?: string[] | null
+          subjects_taught?: string[] | null
           updated_at?: string
           username?: string | null
         }

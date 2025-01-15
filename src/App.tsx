@@ -47,8 +47,34 @@ const App = () => {
                     element={user ? <Navigate to="/dashboard" replace /> : <Auth />}
                   />
                   <Route
-                    path="/dashboard"
-                    element={user ? <div>Dashboard (Coming Soon)</div> : <Navigate to="/auth" replace />}
+                    path="/dashboard/student"
+                    element={
+                      user?.user_metadata?.role === 'student' ? (
+                        <div>Student Dashboard (Coming Soon)</div>
+                      ) : (
+                        <Navigate to="/auth" replace />
+                      )
+                    }
+                  />
+                  <Route
+                    path="/dashboard/teacher"
+                    element={
+                      user?.user_metadata?.role === 'teacher' ? (
+                        <div>Educator Dashboard (Coming Soon)</div>
+                      ) : (
+                        <Navigate to="/auth" replace />
+                      )
+                    }
+                  />
+                  <Route
+                    path="/dashboard/parent"
+                    element={
+                      user?.user_metadata?.role === 'parent' ? (
+                        <div>Parent Dashboard (Coming Soon)</div>
+                      ) : (
+                        <Navigate to="/auth" replace />
+                      )
+                    }
                   />
                   <Route
                     path="/courses"
