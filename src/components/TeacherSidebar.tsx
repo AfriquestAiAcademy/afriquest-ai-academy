@@ -1,5 +1,6 @@
-import { BookOpen, GraduationCap, Home, BarChart, Upload, User } from "lucide-react";
+import { BookOpen, GraduationCap, Home, BarChart, Upload, User, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Sidebar,
   SidebarContent,
@@ -47,11 +48,16 @@ const menuItems = [
 export function TeacherSidebar() {
   const navigate = useNavigate();
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
+
   return (
     <Sidebar>
-      <SidebarContent className="mt-16"> {/* Add margin-top to account for fixed header */}
+      <SidebarContent className="mt-16 flex flex-col h-[calc(100vh-4rem)]">
         <SidebarGroup>
-          <SidebarGroupLabel>Menu</SidebarGroupLabel>
+          <SidebarGroupLabel className="px-3">Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -59,16 +65,28 @@ export function TeacherSidebar() {
                   <SidebarMenuButton
                     tooltip={item.title}
                     onClick={() => navigate(item.url)}
-                    className="flex items-center gap-3" // Add gap between icon and text
+                    className="flex items-center gap-3 px-3 py-2"
                   >
-                    <item.icon className="h-4 w-4 flex-shrink-0" /> {/* Prevent icon from shrinking */}
-                    <span className="truncate">{item.title}</span> {/* Truncate text if needed */}
+                    <item.icon className="h-4 w-4 flex-shrink-0" />
+                    <span className="truncate">{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <div className="mt-auto mb-4">
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip="Logout"
+              onClick={handleLogout}
+              className="flex items-center gap-3 px-3 py-2 text-red-500 hover:text-red-600"
+            >
+              <LogOut className="h-4 w-4 flex-shrink-0" />
+              <span className="truncate">Logout</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </div>
       </SidebarContent>
     </Sidebar>
   );
