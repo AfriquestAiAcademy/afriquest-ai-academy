@@ -7,8 +7,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { TeacherSidebar } from "@/components/TeacherSidebar";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import TeacherDashboard from "./pages/teacher/TeacherDashboard";
 
 const queryClient = new QueryClient();
 
@@ -50,7 +52,7 @@ const App = () => {
         <BrowserRouter>
           <SidebarProvider defaultOpen>
             <div className="flex min-h-screen w-full">
-              {user && <AppSidebar />}
+              {user?.user_metadata?.role === 'teacher' ? <TeacherSidebar /> : user && <AppSidebar />}
               <main className="flex-1">
                 {user && <SidebarTrigger className="fixed top-4 left-4 z-50" />}
                 <Routes>
@@ -94,7 +96,7 @@ const App = () => {
                     path="/dashboard/teacher"
                     element={
                       user?.user_metadata?.role === 'teacher' ? (
-                        <div>Educator Dashboard (Coming Soon)</div>
+                        <TeacherDashboard />
                       ) : (
                         <Navigate to="/auth" replace />
                       )

@@ -9,6 +9,179 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      assignment_submissions: {
+        Row: {
+          assignment_id: string | null
+          content: string | null
+          feedback: string | null
+          file_path: string | null
+          grade: number | null
+          id: string
+          student_id: string | null
+          submitted_at: string
+        }
+        Insert: {
+          assignment_id?: string | null
+          content?: string | null
+          feedback?: string | null
+          file_path?: string | null
+          grade?: number | null
+          id?: string
+          student_id?: string | null
+          submitted_at?: string
+        }
+        Update: {
+          assignment_id?: string | null
+          content?: string | null
+          feedback?: string | null
+          file_path?: string | null
+          grade?: number | null
+          id?: string
+          student_id?: string | null
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignment_submissions_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assignment_submissions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assignments: {
+        Row: {
+          class_id: string | null
+          created_at: string
+          description: string | null
+          due_date: string | null
+          id: string
+          teacher_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          class_id?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          teacher_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          class_id?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          teacher_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignments_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assignments_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      class_enrollments: {
+        Row: {
+          class_id: string | null
+          id: string
+          joined_at: string
+          student_id: string | null
+        }
+        Insert: {
+          class_id?: string | null
+          id?: string
+          joined_at?: string
+          student_id?: string | null
+        }
+        Update: {
+          class_id?: string | null
+          id?: string
+          joined_at?: string
+          student_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_enrollments_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "class_enrollments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classes: {
+        Row: {
+          created_at: string
+          description: string | null
+          grade_level: string | null
+          id: string
+          name: string
+          subject: string | null
+          teacher_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          grade_level?: string | null
+          id?: string
+          name: string
+          subject?: string | null
+          teacher_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          grade_level?: string | null
+          id?: string
+          name?: string
+          subject?: string | null
+          teacher_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classes_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           age: number | null
@@ -62,6 +235,86 @@ export type Database = {
           username?: string | null
         }
         Relationships: []
+      }
+      resource_shares: {
+        Row: {
+          class_id: string | null
+          id: string
+          resource_id: string | null
+          shared_at: string
+        }
+        Insert: {
+          class_id?: string | null
+          id?: string
+          resource_id?: string | null
+          shared_at?: string
+        }
+        Update: {
+          class_id?: string | null
+          id?: string
+          resource_id?: string | null
+          shared_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_shares_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "resource_shares_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      resources: {
+        Row: {
+          created_at: string
+          description: string | null
+          file_path: string
+          file_type: string
+          id: string
+          is_public: boolean | null
+          teacher_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          file_path: string
+          file_type: string
+          id?: string
+          is_public?: boolean | null
+          teacher_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          file_path?: string
+          file_type?: string
+          id?: string
+          is_public?: boolean | null
+          teacher_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resources_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       student_progress: {
         Row: {
