@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
+import { DashboardHeader } from "@/components/DashboardHeader";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
@@ -52,9 +53,10 @@ const App = () => {
         <BrowserRouter>
           <SidebarProvider defaultOpen>
             <div className="flex min-h-screen w-full">
+              {user?.user_metadata?.role === 'teacher' && <DashboardHeader />}
               {user?.user_metadata?.role === 'teacher' ? <TeacherSidebar /> : user && <AppSidebar />}
-              <main className="flex-1">
-                {user && <SidebarTrigger className="fixed top-4 left-4 z-50" />}
+              <main className="flex-1 mt-16"> {/* Add margin-top to account for fixed header */}
+                {user && <SidebarTrigger className="fixed top-20 left-4 z-50" />} {/* Adjust trigger position */}
                 <Routes>
                   <Route
                     path="/"

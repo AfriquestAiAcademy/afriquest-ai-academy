@@ -49,7 +49,7 @@ export function TeacherSidebar() {
 
   return (
     <Sidebar>
-      <SidebarContent>
+      <SidebarContent className="mt-16"> {/* Add margin-top to account for fixed header */}
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -59,9 +59,10 @@ export function TeacherSidebar() {
                   <SidebarMenuButton
                     tooltip={item.title}
                     onClick={() => navigate(item.url)}
+                    className="flex items-center gap-3" // Add gap between icon and text
                   >
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.title}</span>
+                    <item.icon className="h-4 w-4 flex-shrink-0" /> {/* Prevent icon from shrinking */}
+                    <span className="truncate">{item.title}</span> {/* Truncate text if needed */}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
