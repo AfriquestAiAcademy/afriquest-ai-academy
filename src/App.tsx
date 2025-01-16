@@ -12,6 +12,19 @@ import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
+const getDashboardRoute = (role?: string) => {
+  switch (role) {
+    case 'student':
+      return '/dashboard/student';
+    case 'teacher':
+      return '/dashboard/teacher';
+    case 'parent':
+      return '/dashboard/parent';
+    default:
+      return '/auth';
+  }
+};
+
 const App = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -41,10 +54,31 @@ const App = () => {
               <main className="flex-1">
                 {user && <SidebarTrigger className="fixed top-4 left-4 z-50" />}
                 <Routes>
-                  <Route path="/" element={<Index />} />
+                  <Route
+                    path="/"
+                    element={
+                      user ? (
+                        <Navigate
+                          to={getDashboardRoute(user.user_metadata?.role)}
+                          replace
+                        />
+                      ) : (
+                        <Index />
+                      )
+                    }
+                  />
                   <Route
                     path="/auth"
-                    element={user ? <Navigate to="/dashboard" replace /> : <Auth />}
+                    element={
+                      user ? (
+                        <Navigate
+                          to={getDashboardRoute(user.user_metadata?.role)}
+                          replace
+                        />
+                      ) : (
+                        <Auth />
+                      )
+                    }
                   />
                   <Route
                     path="/dashboard/student"
@@ -78,15 +112,33 @@ const App = () => {
                   />
                   <Route
                     path="/courses"
-                    element={user ? <div>Courses (Coming Soon)</div> : <Navigate to="/auth" replace />}
+                    element={
+                      user ? (
+                        <div>Courses (Coming Soon)</div>
+                      ) : (
+                        <Navigate to="/auth" replace />
+                      )
+                    }
                   />
                   <Route
                     path="/achievements"
-                    element={user ? <div>Achievements (Coming Soon)</div> : <Navigate to="/auth" replace />}
+                    element={
+                      user ? (
+                        <div>Achievements (Coming Soon)</div>
+                      ) : (
+                        <Navigate to="/auth" replace />
+                      )
+                    }
                   />
                   <Route
                     path="/profile"
-                    element={user ? <div>Profile (Coming Soon)</div> : <Navigate to="/auth" replace />}
+                    element={
+                      user ? (
+                        <div>Profile (Coming Soon)</div>
+                      ) : (
+                        <Navigate to="/auth" replace />
+                      )
+                    }
                   />
                 </Routes>
               </main>
