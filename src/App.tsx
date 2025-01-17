@@ -23,10 +23,14 @@ const getDashboardRoute = (role?: string) => {
       return '/dashboard/teacher';
     case 'parent':
       return '/dashboard/parent';
+    case 'admin':
+      return '/dashboard/teacher'; // Admins default to teacher dashboard
     default:
       return '/auth';
   }
 };
+
+const isAdmin = (user: any) => user?.user_metadata?.role === 'admin';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -53,9 +57,9 @@ const App = () => {
         <BrowserRouter>
           <SidebarProvider>
             <div className="flex min-h-screen w-full">
-              {user?.user_metadata?.role === 'teacher' && <DashboardHeader />}
-              {user?.user_metadata?.role === 'teacher' ? <TeacherSidebar /> : user && <AppSidebar />}
-              <main className="flex-1 mt-16 ml-64"> {/* Add margin-left to account for fixed sidebar width */}
+              {(user?.user_metadata?.role === 'teacher' || isAdmin(user)) && <DashboardHeader />}
+              {user?.user_metadata?.role === 'teacher' || isAdmin(user) ? <TeacherSidebar /> : user && <AppSidebar />}
+              <main className="flex-1 mt-16 ml-64">
                 <Routes>
                   <Route
                     path="/"
@@ -86,7 +90,7 @@ const App = () => {
                   <Route
                     path="/dashboard/student"
                     element={
-                      user?.user_metadata?.role === 'student' ? (
+                      user?.user_metadata?.role === 'student' || isAdmin(user) ? (
                         <div>Student Dashboard (Coming Soon)</div>
                       ) : (
                         <Navigate to="/auth" replace />
@@ -96,7 +100,7 @@ const App = () => {
                   <Route
                     path="/dashboard/teacher"
                     element={
-                      user?.user_metadata?.role === 'teacher' ? (
+                      user?.user_metadata?.role === 'teacher' || isAdmin(user) ? (
                         <TeacherDashboard />
                       ) : (
                         <Navigate to="/auth" replace />
@@ -106,7 +110,7 @@ const App = () => {
                   <Route
                     path="/dashboard/parent"
                     element={
-                      user?.user_metadata?.role === 'parent' ? (
+                      user?.user_metadata?.role === 'parent' || isAdmin(user) ? (
                         <div>Parent Dashboard (Coming Soon)</div>
                       ) : (
                         <Navigate to="/auth" replace />
