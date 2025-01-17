@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
 import { DashboardHeader } from "@/components/DashboardHeader";
@@ -51,12 +51,11 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <SidebarProvider defaultOpen>
+          <SidebarProvider>
             <div className="flex min-h-screen w-full">
               {user?.user_metadata?.role === 'teacher' && <DashboardHeader />}
               {user?.user_metadata?.role === 'teacher' ? <TeacherSidebar /> : user && <AppSidebar />}
-              <main className="flex-1 mt-16"> {/* Add margin-top to account for fixed header */}
-                {user && <SidebarTrigger className="fixed top-20 left-4 z-50" />} {/* Adjust trigger position */}
+              <main className="flex-1 mt-16 ml-64"> {/* Add margin-left to account for fixed sidebar width */}
                 <Routes>
                   <Route
                     path="/"

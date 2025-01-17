@@ -48,7 +48,7 @@ export function TeacherSidebar() {
   };
 
   return (
-    <Sidebar>
+    <Sidebar className="fixed left-0 top-0 h-screen">
       <SidebarContent className="mt-16 flex flex-col h-[calc(100vh-4rem)]">
         <SidebarGroup>
           <SidebarGroupContent>
