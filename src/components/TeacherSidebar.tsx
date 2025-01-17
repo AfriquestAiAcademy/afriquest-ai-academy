@@ -6,7 +6,6 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -57,7 +56,6 @@ export function TeacherSidebar() {
     <Sidebar>
       <SidebarContent className="mt-16 flex flex-col h-[calc(100vh-4rem)]">
         <SidebarGroup>
-          <SidebarGroupLabel className="px-3">Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
