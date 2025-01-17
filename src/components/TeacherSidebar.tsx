@@ -1,4 +1,4 @@
-import { BookOpen, GraduationCap, Home, BarChart, Upload, User, LogOut } from "lucide-react";
+import { Home, BookOpen, GraduationCap, Upload, User, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -33,11 +33,6 @@ const menuItems = [
     url: "/dashboard/teacher/assignments",
   },
   {
-    title: "Reports",
-    icon: BarChart,
-    url: "/dashboard/teacher/reports",
-  },
-  {
     title: "Profile",
     icon: User,
     url: "/profile",
@@ -61,7 +56,6 @@ export function TeacherSidebar() {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
-                    tooltip={item.title}
                     onClick={() => navigate(item.url)}
                     className="w-full flex items-center gap-3 px-3 py-2"
                   >
@@ -76,7 +70,6 @@ export function TeacherSidebar() {
         <div className="mt-auto mb-4">
           <SidebarMenuItem>
             <SidebarMenuButton
-              tooltip="Logout"
               onClick={handleLogout}
               className="w-full flex items-center gap-3 px-3 py-2 text-red-500 hover:text-red-600"
             >
