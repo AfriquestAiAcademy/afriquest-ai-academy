@@ -63,10 +63,10 @@ export function TeacherSidebar() {
                   <SidebarMenuButton
                     tooltip={item.title}
                     onClick={() => navigate(item.url)}
-                    className="flex items-center gap-3 px-3 py-2"
+                    className="w-full flex items-center gap-3 px-3 py-2"
                   >
-                    <item.icon className="h-4 w-4 flex-shrink-0" />
-                    <span className="truncate">{item.title}</span>
+                    <item.icon className="h-4 w-4" />
+                    <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -78,10 +78,10 @@ export function TeacherSidebar() {
             <SidebarMenuButton
               tooltip="Logout"
               onClick={handleLogout}
-              className="flex items-center gap-3 px-3 py-2 text-red-500 hover:text-red-600"
+              className="w-full flex items-center gap-3 px-3 py-2 text-red-500 hover:text-red-600"
             >
-              <LogOut className="h-4 w-4 flex-shrink-0" />
-              <span className="truncate">Logout</span>
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </div>
