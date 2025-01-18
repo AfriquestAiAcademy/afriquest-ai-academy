@@ -120,14 +120,15 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
-      {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-6 mb-8">
-        <h1 className="text-3xl font-bold mb-2">Welcome, {stats.adminName}!</h1>
-        <p className="text-muted-foreground">You're shaping the future of education!</p>
-      </div>
+    <div className="flex justify-center min-h-screen bg-background">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-6 mb-8">
+          <h1 className="text-3xl font-bold mb-2">Welcome, {stats.adminName}!</h1>
+          <p className="text-muted-foreground">You're shaping the future of education!</p>
+        </div>
 
-      {/* Stats Grid */}
+        {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -222,7 +223,7 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
-      {/* Chart */}
+        {/* Chart */}
       <Card>
         <CardHeader>
           <CardTitle>User Growth</CardTitle>
@@ -241,6 +242,7 @@ export default function AdminDashboard() {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
