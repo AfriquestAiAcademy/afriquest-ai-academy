@@ -120,8 +120,8 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="p-6">
-      <div className="max-w-7xl space-y-8">
+    <div className="flex-1 px-8 py-6">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg p-6 mb-8">
           <h1 className="text-3xl font-bold mb-2">Welcome, {stats.adminName}!</h1>

@@ -7,7 +7,10 @@ import {
   Settings,
   HeadphonesIcon,
   LogOut,
-  BarChart3
+  BarChart3,
+  School,
+  UserPlus,
+  User
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +20,7 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -24,9 +28,24 @@ import {
 
 const menuItems = [
   {
-    title: "Dashboard",
+    title: "Admin Dashboard",
     icon: LayoutDashboard,
     url: "/dashboard/admin",
+  },
+  {
+    title: "Student Dashboard",
+    icon: School,
+    url: "/dashboard/student",
+  },
+  {
+    title: "Teacher Dashboard",
+    icon: GraduationCap,
+    url: "/dashboard/teacher",
+  },
+  {
+    title: "Parent Dashboard",
+    icon: User,
+    url: "/dashboard/parent",
   },
   {
     title: "Manage Users",

@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Control } from "react-hook-form";
 
 interface GradeLevelSelectProps {
@@ -22,31 +22,37 @@ const GradeLevelSelect = ({ control, name }: GradeLevelSelectProps) => {
   };
 
   return (
-    <FormItem>
-      <FormLabel>Grade Level</FormLabel>
-      <Select name={name}>
-        <FormControl>
-          <SelectTrigger>
-            <SelectValue placeholder="Select your grade" />
-          </SelectTrigger>
-        </FormControl>
-        <SelectContent>
-          {Object.entries(gradeLevels).map(([category, levels]) => (
-            <div key={category}>
-              <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground">
-                {category}
-              </div>
-              {levels.map((level) => (
-                <SelectItem key={level} value={level}>
-                  {level}
-                </SelectItem>
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Grade Level</FormLabel>
+          <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Select your grade" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {Object.entries(gradeLevels).map(([category, levels]) => (
+                <div key={category}>
+                  <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground">
+                    {category}
+                  </div>
+                  {levels.map((level) => (
+                    <SelectItem key={level} value={level}>
+                      {level}
+                    </SelectItem>
+                  ))}
+                </div>
               ))}
-            </div>
-          ))}
-        </SelectContent>
-      </Select>
-      <FormMessage />
-    </FormItem>
+            </SelectContent>
+          </Select>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 };
 
