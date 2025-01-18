@@ -48,7 +48,7 @@ const withPasswordValidation = (schema: z.ZodObject<any, any>) => {
 const adminSchema = withPasswordValidation(
   z.object({
     ...baseSchema.shape,
-    adminCode: z.string().min(1, "Admin code is required"),
+    // adminCode: z.string().min(1, "Admin code is required"), // Removed admin code validation
   })
 );
 
@@ -122,26 +122,20 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
       email: "",
       password: "",
       confirmPassword: "",
-      adminCode: "",
+      // adminCode: "", // Removed admin code from default values
     },
   });
 
   const handleSignUp = async (data: any, role: string) => {
     setIsLoading(true);
     try {
-      // Verify admin code if signing up as admin
-      if (role === 'admin' && data.adminCode !== 'AFRIQUEST_ADMIN') {
-        toast.error("Invalid admin code");
-        return;
-      }
-
       const { error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
           data: {
             full_name: data.fullName,
-            role: role,
+            role: role, // This will be 'admin' when signing up through admin tab
             grade_level: data.gradeLevel,
             subjects_taught: data.subjectsTaught,
             child_details: data.childDetails,
@@ -152,6 +146,11 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
       if (error) throw error;
 
       toast.success("Sign up successful! Please check your email to verify your account.");
+      
+      // Redirect to appropriate dashboard based on role
+      if (role === 'admin') {
+        navigate('/dashboard/teacher');
+      }
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -554,23 +553,7 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={adminForm.control}
-                  name="adminCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Admin Code</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Enter admin code"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Removed adminCode field */}
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Signing up..." : "Sign Up as Admin"}
                 </Button>

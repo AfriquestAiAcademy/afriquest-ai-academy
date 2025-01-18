@@ -59,7 +59,7 @@ const App = () => {
             <div className="flex min-h-screen w-full">
               {(user?.user_metadata?.role === 'teacher' || isAdmin(user)) && <DashboardHeader />}
               {user?.user_metadata?.role === 'teacher' || isAdmin(user) ? <TeacherSidebar /> : user && <AppSidebar />}
-              <main className="flex-1 mt-16 ml-64">
+              <main className={`flex-1 ${user ? 'mt-16 ml-64' : ''}`}>
                 <Routes>
                   <Route
                     path="/"
