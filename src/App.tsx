@@ -8,10 +8,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
+import { AdminSidebar } from "@/components/AdminSidebar";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -24,7 +26,7 @@ const getDashboardRoute = (role?: string) => {
     case 'parent':
       return '/dashboard/parent';
     case 'admin':
-      return '/dashboard/teacher'; // Admins default to teacher dashboard
+      return '/dashboard/admin';
     default:
       return '/auth';
   }
@@ -49,6 +51,13 @@ const App = () => {
     return null;
   }
 
+  const getSidebar = () => {
+    if (!user) return null;
+    if (isAdmin(user)) return <AdminSidebar />;
+    if (user.user_metadata?.role === 'teacher') return <TeacherSidebar />;
+    return <AppSidebar />;
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -57,9 +66,9 @@ const App = () => {
         <BrowserRouter>
           <SidebarProvider>
             <div className="flex min-h-screen w-full">
-              {(user?.user_metadata?.role === 'teacher' || isAdmin(user)) && <DashboardHeader />}
-              {user?.user_metadata?.role === 'teacher' || isAdmin(user) ? <TeacherSidebar /> : user && <AppSidebar />}
-              <main className={`flex-1 ${user ? 'mt-16 ml-64' : ''}`}>
+              {user && <DashboardHeader />}
+              {getSidebar()}
+              <main className={`flex-1 ${user ? 'mt-16' : ''} ${user ? 'ml-64' : ''}`}>
                 <Routes>
                   <Route
                     path="/"
@@ -102,6 +111,16 @@ const App = () => {
                     element={
                       user?.user_metadata?.role === 'teacher' || isAdmin(user) ? (
                         <TeacherDashboard />
+                      ) : (
+                        <Navigate to="/auth" replace />
+                      )
+                    }
+                  />
+                  <Route
+                    path="/dashboard/admin"
+                    element={
+                      isAdmin(user) ? (
+                        <AdminDashboard />
                       ) : (
                         <Navigate to="/auth" replace />
                       )
