@@ -44,7 +44,7 @@ export default function TeacherDashboard() {
         if (!user) return;
 
         const [profileResponse, classesResponse, studentsResponse, assignmentsResponse, resourcesResponse] = await Promise.all([
-          supabase.from('profiles').select('full_name').eq('id', user.id).single(),
+          supabase.from('profiles').select('full_name').eq('id', user.id).maybeSingle(),
           supabase.from('classes').select('id').eq('teacher_id', user.id),
           supabase.from('class_enrollments').select('id, class_id').in('class_id', 
             (await supabase.from('classes').select('id').eq('teacher_id', user.id)).data?.map(c => c.id) || []
@@ -60,10 +60,11 @@ export default function TeacherDashboard() {
           totalAssignments: assignmentsResponse.data?.length || 0,
           totalResources: resourcesResponse.data?.length || 0,
         });
-      } catch (error) {
+      } catch (error: any) {
+        console.error('Error fetching dashboard stats:', error);
         toast({
           title: "Error fetching dashboard stats",
-          description: "Please try again later",
+          description: error.message || "Please try again later",
           variant: "destructive",
         });
       }
