@@ -9,11 +9,13 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
 import { AdminSidebar } from "@/components/AdminSidebar";
+import { StudentSidebar } from "@/components/student/StudentSidebar";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import StudentDashboard from "./pages/student/StudentDashboard";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +57,7 @@ const App = () => {
     if (!user) return null;
     if (isAdmin(user)) return <AdminSidebar />;
     if (user.user_metadata?.role === 'teacher') return <TeacherSidebar />;
+    if (user.user_metadata?.role === 'student') return <StudentSidebar />;
     return <AppSidebar />;
   };
 
@@ -100,7 +103,7 @@ const App = () => {
                     path="/dashboard/student"
                     element={
                       user?.user_metadata?.role === 'student' || isAdmin(user) ? (
-                        <div>Student Dashboard (Coming Soon)</div>
+                        <StudentDashboard />
                       ) : (
                         <Navigate to="/auth" replace />
                       )
