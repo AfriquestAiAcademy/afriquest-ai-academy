@@ -67,7 +67,7 @@ export default function StudentDashboard() {
   });
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="px-4 py-6 space-y-6">
       {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-primary to-blue-600 text-white p-6 rounded-lg shadow-lg animate-fade-in">
         <h1 className="text-2xl font-bold">
