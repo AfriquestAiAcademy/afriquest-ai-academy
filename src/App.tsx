@@ -71,7 +71,7 @@ const App = () => {
             <div className="flex min-h-screen w-full">
               {user && <DashboardHeader />}
               {getSidebar()}
-              <main className={`flex-1 ${user ? 'mt-16' : ''} ${user ? 'ml-64' : ''}`}>
+              <main className={`flex-1 ${user ? 'mt-16' : ''}`}>
                 <Routes>
                   <Route
                     path="/"
