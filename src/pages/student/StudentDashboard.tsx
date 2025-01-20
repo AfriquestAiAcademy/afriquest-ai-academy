@@ -14,11 +14,12 @@ import {
   Upload,
   PlayCircle,
 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function StudentDashboard() {
   const [progress, setProgress] = useState(70);
 
-  const { data: profile } = useQuery({
+  const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -34,7 +35,7 @@ export default function StudentDashboard() {
     },
   });
 
-  const { data: enrollments } = useQuery({
+  const { data: enrollments, isLoading: enrollmentsLoading } = useQuery({
     queryKey: ["enrollments"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -49,7 +50,7 @@ export default function StudentDashboard() {
     },
   });
 
-  const { data: assignments } = useQuery({
+  const { data: assignments, isLoading: assignmentsLoading } = useQuery({
     queryKey: ["assignments"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -65,6 +66,28 @@ export default function StudentDashboard() {
       return data || [];
     },
   });
+
+  const isLoading = profileLoading || enrollmentsLoading || assignmentsLoading;
+
+  if (isLoading) {
+    return (
+      <div className="p-6 space-y-6">
+        <Skeleton className="h-24 w-full rounded-lg" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-lg" />
+          ))}
+        </div>
+        <Skeleton className="h-40 w-full rounded-lg" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="h-24 rounded-lg" />
+          ))}
+        </div>
+        <Skeleton className="h-64 w-full rounded-lg" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">
