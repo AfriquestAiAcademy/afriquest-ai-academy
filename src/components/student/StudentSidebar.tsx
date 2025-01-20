@@ -56,7 +56,7 @@ const menuItems = [
   {
     title: "Community",
     icon: MessageSquare,
-    url: "/dashboard/student/community",
+    url: "/community",
   },
   {
     title: "Profile Settings",

@@ -1,4 +1,4 @@
-import { Home, BookOpen, GraduationCap, Upload, User, LogOut } from "lucide-react";
+import { Home, BookOpen, GraduationCap, Upload, User, LogOut, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -31,6 +31,11 @@ const menuItems = [
     title: "Assignments",
     icon: BookOpen,
     url: "/dashboard/teacher/assignments",
+  },
+  {
+    title: "Community",
+    icon: MessageSquare,
+    url: "/community",
   },
   {
     title: "Profile",
