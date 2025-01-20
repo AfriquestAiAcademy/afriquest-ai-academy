@@ -357,6 +357,126 @@ export type Database = {
           },
         ]
       }
+      student_subject_selections: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean | null
+          selected_by_id: string
+          student_id: string
+          subject_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          selected_by_id: string
+          student_id: string
+          subject_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          selected_by_id?: string
+          student_id?: string
+          subject_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_subject_selections_selected_by_id_fkey"
+            columns: ["selected_by_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_subject_selections_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_subject_selections_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subject_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          educational_level: Database["public"]["Enums"]["educational_level"]
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          educational_level: Database["public"]["Enums"]["educational_level"]
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          educational_level?: Database["public"]["Enums"]["educational_level"]
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subjects: {
+        Row: {
+          academic_track: Database["public"]["Enums"]["academic_track"] | null
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          subject_type: Database["public"]["Enums"]["subject_type"]
+          updated_at: string
+        }
+        Insert: {
+          academic_track?: Database["public"]["Enums"]["academic_track"] | null
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          subject_type: Database["public"]["Enums"]["subject_type"]
+          updated_at?: string
+        }
+        Update: {
+          academic_track?: Database["public"]["Enums"]["academic_track"] | null
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          subject_type?: Database["public"]["Enums"]["subject_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subjects_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "subject_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -365,7 +485,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      academic_track: "science" | "arts" | "commerce" | "general"
+      educational_level:
+        | "primary"
+        | "junior_secondary"
+        | "senior_secondary"
+        | "tertiary"
+      subject_type: "mandatory" | "optional" | "track_specific"
     }
     CompositeTypes: {
       [_ in never]: never

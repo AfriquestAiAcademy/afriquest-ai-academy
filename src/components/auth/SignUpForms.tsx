@@ -21,9 +21,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import GradeLevelSelect from "./GradeLevelSelect";
 
 const baseSchema = z.object({
@@ -45,17 +53,11 @@ const withPasswordValidation = (schema: z.ZodObject<any, any>) => {
   });
 };
 
-const adminSchema = withPasswordValidation(
-  z.object({
-    ...baseSchema.shape,
-    // adminCode: z.string().min(1, "Admin code is required"), // Removed admin code validation
-  })
-);
-
 const studentSchema = withPasswordValidation(
   z.object({
     ...baseSchema.shape,
     gradeLevel: z.string().min(1, "Please select a grade level"),
+    subjects: z.array(z.string()).min(1, "Please select at least one subject"),
   })
 );
 
@@ -82,6 +84,18 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  const { data: subjects } = useQuery({
+    queryKey: ["subjects"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("subjects")
+        .select("id, name, category:subject_categories(educational_level)");
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const studentForm = useForm({
     resolver: zodResolver(studentSchema),
     defaultValues: {
@@ -90,6 +104,7 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
       password: "",
       confirmPassword: "",
       gradeLevel: "",
+      subjects: [],
     },
   });
 
@@ -129,28 +144,38 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
   const handleSignUp = async (data: any, role: string) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
+      const { error: signUpError, data: userData } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
           data: {
             full_name: data.fullName,
-            role: role, // This will be 'admin' when signing up through admin tab
+            role: role,
             grade_level: data.gradeLevel,
-            subjects_taught: data.subjectsTaught,
-            child_details: data.childDetails,
+            subjects_of_interest: data.subjects,
           },
         },
       });
 
-      if (error) throw error;
+      if (signUpError) throw signUpError;
+
+      if (role === 'student' && userData.user) {
+        // Insert subject selections
+        const { error: selectionError } = await supabase
+          .from('student_subject_selections')
+          .insert(
+            data.subjects.map((subjectId: string) => ({
+              student_id: userData.user!.id,
+              subject_id: subjectId,
+              selected_by_id: userData.user!.id,
+            }))
+          );
+
+        if (selectionError) throw selectionError;
+      }
 
       toast.success("Sign up successful! Please check your email to verify your account.");
-      
-      // Redirect to appropriate dashboard based on role
-      if (role === 'admin') {
-        navigate('/dashboard/teacher');
-      }
+      navigate('/auth');
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -244,6 +269,61 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
                   name="gradeLevel"
                   render={({ field }) => (
                     <GradeLevelSelect control={studentForm.control} name="gradeLevel" />
+                  )}
+                />
+                <FormField
+                  control={studentForm.control}
+                  name="subjects"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Subjects of Interest</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={(value) => {
+                            const currentSubjects = field.value || [];
+                            if (currentSubjects.includes(value)) {
+                              field.onChange(currentSubjects.filter(s => s !== value));
+                            } else {
+                              field.onChange([...currentSubjects, value]);
+                            }
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select subjects" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {subjects?.map((subject) => (
+                              <SelectItem key={subject.id} value={subject.id}>
+                                {subject.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {field.value?.map((subjectId: string) => {
+                          const subject = subjects?.find(s => s.id === subjectId);
+                          return subject ? (
+                            <div
+                              key={subject.id}
+                              className="bg-primary/10 text-primary px-2 py-1 rounded-md text-sm flex items-center gap-1"
+                            >
+                              {subject.name}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  field.onChange(field.value.filter((id: string) => id !== subject.id));
+                                }}
+                                className="hover:text-destructive"
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ) : null;
+                        })}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
                   )}
                 />
                 <Button type="submit" className="w-full" disabled={isLoading}>
