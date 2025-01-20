@@ -17,6 +17,7 @@ import Auth from "./pages/Auth";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
+import CommunityHub from "./pages/community/CommunityHub";
 
 const queryClient = new QueryClient();
 
@@ -165,6 +166,16 @@ const App = () => {
                     element={
                       user ? (
                         <div>Profile (Coming Soon)</div>
+                      ) : (
+                        <Navigate to="/auth" replace />
+                      )
+                    }
+                  />
+                  <Route
+                    path="/community"
+                    element={
+                      user ? (
+                        <CommunityHub />
                       ) : (
                         <Navigate to="/auth" replace />
                       )
