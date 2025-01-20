@@ -11,6 +11,7 @@ import { TeacherSidebar } from "@/components/TeacherSidebar";
 import { AdminSidebar } from "@/components/AdminSidebar";
 import { StudentSidebar } from "@/components/student/StudentSidebar";
 import { DashboardHeader } from "@/components/DashboardHeader";
+import { ChatBot } from "@/components/ChatBot";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
@@ -172,6 +173,7 @@ const App = () => {
                 </Routes>
               </main>
             </div>
+            <ChatBot />
           </SidebarProvider>
         </BrowserRouter>
       </TooltipProvider>
