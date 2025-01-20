@@ -75,6 +75,12 @@ const parentSchema = withPasswordValidation(
   })
 );
 
+const adminSchema = withPasswordValidation(
+  z.object({
+    ...baseSchema.shape,
+  })
+);
+
 interface SignUpFormsProps {
   onToggleForm: () => void;
   defaultTab?: string;
@@ -657,3 +663,4 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
 };
 
 export default SignUpForms;
+
