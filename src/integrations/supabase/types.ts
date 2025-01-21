@@ -42,6 +42,44 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_interactions: {
+        Row: {
+          created_at: string
+          id: string
+          interaction_type: string
+          metadata: Json | null
+          prompt: string
+          response: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interaction_type: string
+          metadata?: Json | null
+          prompt: string
+          response?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          metadata?: Json | null
+          prompt?: string
+          response?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_interactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assignment_submissions: {
         Row: {
           assignment_id: string | null
@@ -360,6 +398,53 @@ export type Database = {
           {
             foreignKeyName: "competitions_organizer_id_fkey"
             columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cultural_content: {
+        Row: {
+          content_type: string
+          country: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          language: string
+          media_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content_type: string
+          country: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          language: string
+          media_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content_type?: string
+          country?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          language?: string
+          media_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cultural_content_created_by_fkey"
+            columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
