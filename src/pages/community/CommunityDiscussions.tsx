@@ -6,24 +6,31 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { MessageSquare, ThumbsUp } from "lucide-react";
 
 export function CommunityDiscussions() {
-  const { data: posts, isLoading } = useQuery({
+  const { data: posts, isLoading, error } = useQuery({
     queryKey: ['community-posts'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('community_posts')
         .select(`
           *,
-          author:profiles(full_name, avatar_url)
+          author:profiles!community_posts_author_id_fkey(full_name, avatar_url)
         `)
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching posts:', error);
+        throw error;
+      }
       return data;
     },
   });
 
   if (isLoading) {
-    return <div>Loading discussions...</div>;
+    return <div className="p-4">Loading discussions...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-red-500">Error loading discussions. Please try again later.</div>;
   }
 
   return (
