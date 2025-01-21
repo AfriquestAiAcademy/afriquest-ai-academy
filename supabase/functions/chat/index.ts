@@ -1,47 +1,50 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { GoogleGenerativeAI } from "@google/generative-ai"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+}
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    const { message } = await req.json();
+    const { message } = await req.json()
+    const genAI = new GoogleGenerativeAI(Deno.env.get('GEMINI_API_KEY') || '')
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" })
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are AfriQuest AI, a helpful educational assistant. You help students with their studies, explain concepts clearly, and encourage learning. Keep responses concise and engaging for students.'
-          },
-          { role: 'user', content: message }
-        ],
-      }),
-    });
+    console.log('Processing chat request:', { message })
 
-    const data = await response.json();
+    const result = await model.generateContent(message)
+    const response = await result.response
+    const text = response.text()
+
+    console.log('Generated response:', { text })
+
     return new Response(
-      JSON.stringify({ message: data.choices[0].message.content }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+      JSON.stringify({ message: text }),
+      { 
+        headers: { 
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        } 
+      }
+    )
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error in chat function:', error)
     return new Response(
-      JSON.stringify({ error: 'Failed to process request' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+      JSON.stringify({ error: error.message }),
+      { 
+        status: 500,
+        headers: { 
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
   }
-});
+})

@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   role: "user" | "assistant";
@@ -27,15 +28,37 @@ export function ChatBot() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage }),
+      // Store the interaction in the database
+      const { error: dbError } = await supabase
+        .from('ai_interactions')
+        .insert({
+          interaction_type: 'chat',
+          prompt: userMessage,
+        });
+
+      if (dbError) {
+        console.error('Error storing interaction:', dbError);
+      }
+
+      // Call the Gemini Edge Function
+      const { data, error } = await supabase.functions.invoke('chat', {
+        body: { message: userMessage },
       });
 
-      if (!response.ok) throw new Error("Failed to get response");
+      if (error) throw error;
 
-      const data = await response.json();
+      // Update the AI interaction with the response
+      if (!dbError) {
+        const { error: updateError } = await supabase
+          .from('ai_interactions')
+          .update({ response: data.message })
+          .eq('prompt', userMessage);
+
+        if (updateError) {
+          console.error('Error updating interaction:', updateError);
+        }
+      }
+
       setMessages((prev) => [...prev, { role: "assistant", content: data.message }]);
     } catch (error) {
       console.error("Chat error:", error);
