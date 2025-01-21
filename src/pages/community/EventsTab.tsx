@@ -13,13 +13,19 @@ export function EventsTab({ searchQuery }: EventsTabProps) {
   const { data: events, isLoading } = useQuery({
     queryKey: ['community-events', searchQuery],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('events')
         .select(`
           *,
           organizer:profiles(full_name)
         `)
         .order('start_date', { ascending: true });
+
+      if (searchQuery) {
+        query = query.or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`);
+      }
+      
+      const { data, error } = await query;
       
       if (error) throw error;
       return data;

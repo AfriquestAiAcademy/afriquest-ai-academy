@@ -13,13 +13,19 @@ export function StudyGroups({ searchQuery }: StudyGroupsProps) {
   const { data: groups, isLoading } = useQuery({
     queryKey: ['study-groups', searchQuery],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('study_groups')
         .select(`
           *,
           creator:profiles(full_name, avatar_url)
         `)
         .order('created_at', { ascending: false });
+
+      if (searchQuery) {
+        query = query.or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`);
+      }
+
+      const { data, error } = await query;
       
       if (error) throw error;
       return data;

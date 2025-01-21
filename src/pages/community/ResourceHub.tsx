@@ -12,7 +12,7 @@ export function ResourceHub({ searchQuery }: ResourceHubProps) {
   const { data: resources, isLoading } = useQuery({
     queryKey: ['resources', searchQuery],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('resources')
         .select(`
           *,
@@ -20,6 +20,12 @@ export function ResourceHub({ searchQuery }: ResourceHubProps) {
         `)
         .eq('is_public', true)
         .order('created_at', { ascending: false });
+
+      if (searchQuery) {
+        query = query.or(`title.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`);
+      }
+      
+      const { data, error } = await query;
       
       if (error) throw error;
       return data;

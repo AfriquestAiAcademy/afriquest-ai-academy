@@ -5,17 +5,27 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare, ThumbsUp } from "lucide-react";
 
-export function CommunityDiscussions() {
+interface CommunityDiscussionsProps {
+  searchQuery?: string;
+}
+
+export function CommunityDiscussions({ searchQuery }: CommunityDiscussionsProps) {
   const { data: posts, isLoading, error } = useQuery({
-    queryKey: ['community-posts'],
+    queryKey: ['community-posts', searchQuery],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('community_posts')
         .select(`
           *,
           author:profiles!community_posts_author_id_fkey(full_name, avatar_url)
         `)
         .order('created_at', { ascending: false });
+      
+      if (searchQuery) {
+        query = query.or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`);
+      }
+      
+      const { data, error } = await query;
       
       if (error) {
         console.error('Error fetching posts:', error);
