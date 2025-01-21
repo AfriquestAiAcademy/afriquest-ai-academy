@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MessageCircle, X, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -17,10 +17,25 @@ export function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || !user) return;
 
     const userMessage = input.trim();
     setInput("");
@@ -28,16 +43,18 @@ export function ChatBot() {
     setIsLoading(true);
 
     try {
-      // Store the interaction in the database
+      // Store the interaction in the database with user_id
       const { error: dbError } = await supabase
         .from('ai_interactions')
         .insert({
+          user_id: user.id,
           interaction_type: 'chat',
           prompt: userMessage,
         });
 
       if (dbError) {
         console.error('Error storing interaction:', dbError);
+        throw dbError;
       }
 
       // Call the Gemini Edge Function
@@ -48,25 +65,27 @@ export function ChatBot() {
       if (error) throw error;
 
       // Update the AI interaction with the response
-      if (!dbError) {
-        const { error: updateError } = await supabase
-          .from('ai_interactions')
-          .update({ response: data.message })
-          .eq('prompt', userMessage);
+      const { error: updateError } = await supabase
+        .from('ai_interactions')
+        .update({ response: data.message })
+        .eq('prompt', userMessage)
+        .eq('user_id', user.id);
 
-        if (updateError) {
-          console.error('Error updating interaction:', updateError);
-        }
+      if (updateError) {
+        console.error('Error updating interaction:', updateError);
       }
 
       setMessages((prev) => [...prev, { role: "assistant", content: data.message }]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Chat error:", error);
       toast.error("Failed to get response. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Don't show the chat bot if user is not authenticated
+  if (!user) return null;
 
   if (!isOpen) {
     return (
