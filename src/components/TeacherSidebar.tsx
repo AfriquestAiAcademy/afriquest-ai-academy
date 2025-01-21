@@ -1,4 +1,4 @@
-import { Home, BookOpen, GraduationCap, Upload, User, LogOut, MessageSquare } from "lucide-react";
+import { Home, BookOpen, GraduationCap, Upload, User, LogOut, MessageSquare, Calendar, Trophy, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -31,6 +31,21 @@ const menuItems = [
     title: "Assignments",
     icon: BookOpen,
     url: "/dashboard/teacher/assignments",
+  },
+  {
+    title: "Events",
+    icon: Calendar,
+    url: "/events",
+  },
+  {
+    title: "Competitions",
+    icon: Trophy,
+    url: "/competitions",
+  },
+  {
+    title: "Achievements",
+    icon: Award,
+    url: "/achievements",
   },
   {
     title: "Community",

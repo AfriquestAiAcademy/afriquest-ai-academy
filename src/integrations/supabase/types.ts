@@ -9,6 +9,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          badge_image_url: string | null
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          points: number | null
+          requirements: Json | null
+          title: string
+        }
+        Insert: {
+          badge_image_url?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          points?: number | null
+          requirements?: Json | null
+          title: string
+        }
+        Update: {
+          badge_image_url?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          points?: number | null
+          requirements?: Json | null
+          title?: string
+        }
+        Relationships: []
+      }
       assignment_submissions: {
         Row: {
           assignment_id: string | null
@@ -220,6 +253,208 @@ export type Database = {
           {
             foreignKeyName: "community_posts_author_id_fkey"
             columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_submissions: {
+        Row: {
+          competition_id: string | null
+          feedback: string | null
+          file_url: string | null
+          id: string
+          participant_id: string | null
+          score: number | null
+          status: string | null
+          submission_content: string | null
+          submitted_at: string
+        }
+        Insert: {
+          competition_id?: string | null
+          feedback?: string | null
+          file_url?: string | null
+          id?: string
+          participant_id?: string | null
+          score?: number | null
+          status?: string | null
+          submission_content?: string | null
+          submitted_at?: string
+        }
+        Update: {
+          competition_id?: string | null
+          feedback?: string | null
+          file_url?: string | null
+          id?: string
+          participant_id?: string | null
+          score?: number | null
+          status?: string | null
+          submission_content?: string | null
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_submissions_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_submissions_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competitions: {
+        Row: {
+          category: string
+          created_at: string
+          current_participants: number | null
+          description: string | null
+          difficulty_level: string | null
+          end_date: string
+          id: string
+          max_participants: number | null
+          organizer_id: string | null
+          prize_description: string | null
+          start_date: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          current_participants?: number | null
+          description?: string | null
+          difficulty_level?: string | null
+          end_date: string
+          id?: string
+          max_participants?: number | null
+          organizer_id?: string | null
+          prize_description?: string | null
+          start_date: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          current_participants?: number | null
+          description?: string | null
+          difficulty_level?: string | null
+          end_date?: string
+          id?: string
+          max_participants?: number | null
+          organizer_id?: string | null
+          prize_description?: string | null
+          start_date?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competitions_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_registrations: {
+        Row: {
+          event_id: string | null
+          id: string
+          registration_date: string
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          event_id?: string | null
+          id?: string
+          registration_date?: string
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          event_id?: string | null
+          id?: string
+          registration_date?: string
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_registrations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          created_at: string
+          current_participants: number | null
+          description: string | null
+          end_date: string
+          event_type: string
+          id: string
+          is_virtual: boolean | null
+          location: string | null
+          max_participants: number | null
+          organizer_id: string | null
+          start_date: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_participants?: number | null
+          description?: string | null
+          end_date: string
+          event_type: string
+          id?: string
+          is_virtual?: boolean | null
+          location?: string | null
+          max_participants?: number | null
+          organizer_id?: string | null
+          start_date: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_participants?: number | null
+          description?: string | null
+          end_date?: string
+          event_type?: string
+          id?: string
+          is_virtual?: boolean | null
+          location?: string | null
+          max_participants?: number | null
+          organizer_id?: string | null
+          start_date?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_organizer_id_fkey"
+            columns: ["organizer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -669,6 +904,42 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "subject_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string | null
+          earned_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          achievement_id?: string | null
+          earned_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          achievement_id?: string | null
+          earned_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

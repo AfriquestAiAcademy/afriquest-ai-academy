@@ -18,6 +18,9 @@ import TeacherDashboard from "./pages/teacher/TeacherDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import CommunityHub from "./pages/community/CommunityHub";
+import EventsPage from "./pages/events/EventsPage";
+import CompetitionsPage from "./pages/competitions/CompetitionsPage";
+import AchievementsPage from "./pages/achievements/AchievementsPage";
 
 const queryClient = new QueryClient();
 
@@ -155,7 +158,27 @@ const App = () => {
                     path="/achievements"
                     element={
                       user ? (
-                        <div>Achievements (Coming Soon)</div>
+                        <AchievementsPage />
+                      ) : (
+                        <Navigate to="/auth" replace />
+                      )
+                    }
+                  />
+                  <Route
+                    path="/events"
+                    element={
+                      user ? (
+                        <EventsPage />
+                      ) : (
+                        <Navigate to="/auth" replace />
+                      )
+                    }
+                  />
+                  <Route
+                    path="/competitions"
+                    element={
+                      user ? (
+                        <CompetitionsPage />
                       ) : (
                         <Navigate to="/auth" replace />
                       )
