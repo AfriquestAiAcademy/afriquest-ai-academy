@@ -1,50 +1,52 @@
-import { Bell, MessageSquare } from "lucide-react";
+import { Bell, MessageSquare, UserPlus, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-
-// Mock data - would come from backend in real implementation
-const notifications = [
-  {
-    id: 1,
-    type: "assignment",
-    message: "New Math Assignment Due Tomorrow",
-    time: "2 hours ago",
-    unread: true,
-  },
-  {
-    id: 2,
-    type: "message",
-    message: "Sarah Johnson sent you a message",
-    time: "3 hours ago",
-    unread: true,
-  },
-  {
-    id: 3,
-    type: "event",
-    message: "Science Fair Registration Open",
-    time: "1 day ago",
-    unread: false,
-  },
-];
-
-const messages = [
-  {
-    id: 1,
-    from: "Sarah Johnson",
-    preview: "About the group project...",
-    time: "1 hour ago",
-    unread: true,
-  },
-  {
-    id: 2,
-    from: "David Chen",
-    preview: "Thanks for your help!",
-    time: "3 hours ago",
-    unread: true,
-  },
-];
+import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export function NotificationsPanel() {
+  const { data: notifications, isLoading } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (error) {
+        toast.error('Failed to load notifications');
+        throw error;
+      }
+      return data;
+    },
+  });
+
+  const handleAcceptFriendRequest = async (notificationId: string, friendId: string) => {
+    try {
+      await supabase
+        .from('friendships')
+        .update({ status: 'accepted' })
+        .eq('user_id', friendId)
+        .eq('friend_id', (await supabase.auth.getUser()).data.user?.id);
+
+      await supabase
+        .from('notifications')
+        .update({ is_read: true })
+        .eq('id', notificationId);
+
+      toast.success('Friend request accepted!');
+    } catch (error) {
+      toast.error('Failed to accept friend request');
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading notifications...</div>;
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <Card className="p-4">
@@ -53,19 +55,51 @@ export function NotificationsPanel() {
             <Bell className="h-5 w-5 text-primary" />
             <h3 className="font-semibold">Recent Notifications</h3>
           </div>
-          <Badge variant="secondary">3 new</Badge>
+          <Badge variant="secondary">
+            {notifications?.filter(n => !n.is_read).length || 0} new
+          </Badge>
         </div>
         <div className="space-y-3">
-          {notifications.map((notification) => (
+          {notifications?.map((notification) => (
             <div
               key={notification.id}
               className={`p-3 rounded-lg ${
-                notification.unread ? "bg-primary/5" : "bg-gray-50"
+                !notification.is_read ? "bg-primary/5" : "bg-gray-50"
               }`}
             >
-              <p className="text-sm font-medium">{notification.message}</p>
-              <span className="text-xs text-muted-foreground">
-                {notification.time}
+              {notification.type === 'friend_request' && (
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <UserPlus className="h-4 w-4 text-primary" />
+                    <p className="text-sm font-medium">
+                      {notification.content.senderName} sent you a friend request
+                    </p>
+                  </div>
+                  {!notification.is_read && (
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleAcceptFriendRequest(notification.id, notification.content.senderId)}
+                      >
+                        Accept
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        Decline
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+              {notification.type === 'group_invite' && (
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-primary" />
+                  <p className="text-sm font-medium">
+                    {notification.content.message}
+                  </p>
+                </div>
+              )}
+              <span className="text-xs text-muted-foreground block mt-1">
+                {new Date(notification.created_at).toLocaleDateString()}
               </span>
             </div>
           ))}

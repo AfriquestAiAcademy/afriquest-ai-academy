@@ -10,6 +10,7 @@ import StudentLayout from "@/layouts/StudentLayout";
 import TeacherLayout from "@/layouts/TeacherLayout";
 import ParentLayout from "@/layouts/ParentLayout";
 import ProfileSettings from "@/pages/student/ProfileSettings";
+import CommunityHub from "@/pages/community/CommunityHub";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/dashboard/student" element={<StudentLayout />}>
             <Route index element={<StudentDashboard />} />
             <Route path="profile" element={<ProfileSettings />} />
+            <Route path="community" element={<CommunityHub />} />
           </Route>
           <Route path="/dashboard/teacher" element={<TeacherLayout />}>
             <Route index element={<TeacherDashboard />} />
