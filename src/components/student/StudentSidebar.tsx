@@ -12,6 +12,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useQuery } from "@tanstack/react-query";
 import {
   Sidebar,
   SidebarContent,
@@ -68,6 +70,22 @@ const menuItems = [
 export function StudentSidebar() {
   const navigate = useNavigate();
 
+  const { data: profile } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      return data;
+    },
+  });
+
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
@@ -81,6 +99,24 @@ export function StudentSidebar() {
   return (
     <Sidebar className="fixed left-0 top-0 h-screen">
       <SidebarContent className="mt-16 flex flex-col h-[calc(100vh-4rem)]">
+        <div className="p-4 border-b">
+          <div className="flex items-center gap-3">
+            <Avatar>
+              <AvatarImage src={profile?.avatar_url} />
+              <AvatarFallback>
+                {profile?.full_name?.[0] || profile?.username?.[0] || "S"}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <span className="font-medium">
+                {profile?.full_name || profile?.username || "Student"}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {profile?.education_level || "Student"}
+              </span>
+            </div>
+          </div>
+        </div>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
