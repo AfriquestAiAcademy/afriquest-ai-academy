@@ -7,6 +7,7 @@ import { StatsSummary } from "@/components/student/dashboard/StatsSummary";
 import { ProgressTracker } from "@/components/student/dashboard/ProgressTracker";
 import { QuickActions } from "@/components/student/dashboard/QuickActions";
 import { RecentActivity } from "@/components/student/dashboard/RecentActivity";
+import { NotificationsPanel } from "@/components/student/dashboard/NotificationsPanel";
 
 export default function StudentDashboard() {
   const [progress, setProgress] = useState(70);
@@ -69,6 +70,7 @@ export default function StudentDashboard() {
     <div className="p-6 space-y-6">
       <WelcomeBanner />
       <StatsSummary enrollments={enrollments} assignments={assignments} />
+      <NotificationsPanel />
       <ProgressTracker progress={progress} />
       <QuickActions />
       <RecentActivity assignments={assignments} />
