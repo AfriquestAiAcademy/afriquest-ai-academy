@@ -6,6 +6,45 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+interface NotificationContent {
+  senderName?: string;
+  senderId?: string;
+  message?: string;
+}
+
+interface Notification {
+  id: string;
+  type: 'friend_request' | 'group_invite' | 'system';
+  content: NotificationContent;
+  is_read: boolean;
+  created_at: string;
+}
+
+interface Message {
+  id: string;
+  from: string;
+  preview: string;
+  time: string;
+  unread: boolean;
+}
+
+const recentMessages: Message[] = [
+  {
+    id: '1',
+    from: 'Sarah Johnson',
+    preview: 'Hey, did you complete the math assignment?',
+    time: '2 hours ago',
+    unread: true,
+  },
+  {
+    id: '2',
+    from: 'Study Group',
+    preview: 'Next meeting scheduled for Friday',
+    time: '5 hours ago',
+    unread: true,
+  },
+];
+
 export function NotificationsPanel() {
   const { data: notifications, isLoading } = useQuery({
     queryKey: ['notifications'],
@@ -20,7 +59,7 @@ export function NotificationsPanel() {
         toast.error('Failed to load notifications');
         throw error;
       }
-      return data;
+      return data as Notification[];
     },
   });
 
@@ -79,7 +118,7 @@ export function NotificationsPanel() {
                     <div className="flex gap-2">
                       <Button
                         size="sm"
-                        onClick={() => handleAcceptFriendRequest(notification.id, notification.content.senderId)}
+                        onClick={() => handleAcceptFriendRequest(notification.id, notification.content.senderId || '')}
                       >
                         Accept
                       </Button>
@@ -115,7 +154,7 @@ export function NotificationsPanel() {
           <Badge variant="secondary">2 unread</Badge>
         </div>
         <div className="space-y-3">
-          {messages.map((message) => (
+          {recentMessages.map((message) => (
             <div
               key={message.id}
               className={`p-3 rounded-lg ${
