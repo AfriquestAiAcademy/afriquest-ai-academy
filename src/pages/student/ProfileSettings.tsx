@@ -82,11 +82,12 @@ export default function ProfileSettings() {
   const handleUpdateProfile = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    
     const updates = {
-      full_name: formData.get("fullName"),
-      education_level: formData.get("educationLevel"),
-      subjects_of_interest: formData.get("subjects")?.toString().split(","),
-      country: formData.get("country"),
+      full_name: String(formData.get("fullName") || ""),
+      education_level: String(formData.get("educationLevel") || ""),
+      subjects_of_interest: String(formData.get("subjects") || "").split(",").map(s => s.trim()),
+      country: String(formData.get("country") || ""),
     };
 
     try {
