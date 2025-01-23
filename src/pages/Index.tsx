@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Brain, Bot, Trophy } from "lucide-react";
+import { ArrowRight, BookOpen, Brain, Bot, Trophy, School, Users, Building2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const features = [
@@ -96,6 +96,47 @@ const plans = [
       "Student Progress Analytics",
       "Professional Development Resources",
       "Priority Technical Support"
+    ],
+  },
+];
+
+const institutionalPlans = [
+  {
+    name: "Classroom",
+    price: "$250/month",
+    icon: <Users className="h-12 w-12 text-primary mb-4" />,
+    description: "Perfect for individual classes up to 25 students",
+    features: [
+      "Up to 25 students per class",
+      "All Premium features for each student",
+      "Class dashboard & analytics",
+      "Collaborative tools & resources",
+      "Bulk assignment management",
+      "Parent access portal",
+      "Class-specific study groups",
+      "Priority classroom support"
+    ],
+  },
+  {
+    name: "School",
+    price: "$1000/month",
+    icon: <Building2 className="h-12 w-12 text-primary mb-4" />,
+    description: "Ideal for entire schools up to 5 classes (125 students)",
+    features: [
+      "Up to 5 classes (125 students total)",
+      "All Classroom Plan features",
+      "School-wide dashboard",
+      "Administrative controls",
+      "Cross-class collaboration",
+      "School performance analytics",
+      "Custom branding options",
+      "Dedicated account manager",
+      "Teacher training resources",
+      "School-wide competitions",
+      "Integration with school systems",
+      "Bulk student/teacher onboarding",
+      "Annual performance reports",
+      "Emergency technical support"
     ],
   },
 ];
@@ -260,12 +301,12 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Pricing Plans */}
+      {/* Individual & Family Plans */}
       <section className="py-20">
         <div className="container px-4 mx-auto">
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Pricing Plans</h2>
-            <p className="text-lg text-gray-600">Choose the perfect plan for your needs</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Individual & Family Plans</h2>
+            <p className="text-lg text-gray-600">Choose the perfect plan for your personal learning journey</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {plans.map((plan, index) => (
@@ -288,6 +329,46 @@ const Index = () => {
                 <Button
                   className="w-full mt-6"
                   variant={index === 1 ? "default" : "outline"}
+                  onClick={() => handlePlanSelection(plan.name)}
+                >
+                  Get Started
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Institutional Plans */}
+      <section className="py-20 bg-gray-50">
+        <div className="container px-4 mx-auto">
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Institutional Plans</h2>
+            <p className="text-lg text-gray-600">Empower your classroom or entire school with our institutional solutions</p>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {institutionalPlans.map((plan, index) => (
+              <div
+                key={index}
+                className="p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div className="text-center mb-6">
+                  {plan.icon}
+                  <h3 className="text-2xl font-semibold mb-2">{plan.name} Plan</h3>
+                  <p className="text-3xl font-bold text-primary mb-2">{plan.price}</p>
+                  <p className="text-gray-600">{plan.description}</p>
+                </div>
+                <ul className="space-y-3 mb-6">
+                  {plan.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-center text-gray-600">
+                      <ArrowRight className="h-4 w-4 mr-2 text-primary" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  className="w-full mt-6"
+                  size="lg"
                   onClick={() => handlePlanSelection(plan.name)}
                 >
                   Get Started
