@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Brain, Bot, Trophy, School, Users, Building2 } from "lucide-react";
+import { ArrowRight, Brain, BookOpen, Bot, Trophy, School, Users, Building2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const features = [
@@ -312,20 +312,22 @@ const Index = () => {
             {plans.map((plan, index) => (
               <div
                 key={index}
-                className={`p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow ${
+                className={`flex flex-col p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow h-full ${
                   index === 1 ? 'ring-2 ring-primary' : ''
                 }`}
               >
-                <h3 className="text-xl font-semibold mb-2">{plan.name}</h3>
-                <p className="text-2xl font-bold text-primary mb-4">{plan.price}</p>
-                <ul className="space-y-3 mb-6">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center text-gray-600">
-                      <ArrowRight className="h-4 w-4 mr-2 text-primary" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                <div className="flex-grow">
+                  <h3 className="text-xl font-semibold mb-2">{plan.name}</h3>
+                  <p className="text-2xl font-bold text-primary mb-4">{plan.price}</p>
+                  <ul className="space-y-3 mb-6">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center text-gray-600">
+                        <ArrowRight className="h-4 w-4 mr-2 text-primary" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 <Button
                   className="w-full mt-6"
                   variant={index === 1 ? "default" : "outline"}
@@ -350,7 +352,7 @@ const Index = () => {
             {institutionalPlans.map((plan, index) => (
               <div
                 key={index}
-                className="p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                className="flex flex-col p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow h-full"
               >
                 <div className="text-center mb-6">
                   {plan.icon}
@@ -358,14 +360,16 @@ const Index = () => {
                   <p className="text-3xl font-bold text-primary mb-2">{plan.price}</p>
                   <p className="text-gray-600">{plan.description}</p>
                 </div>
-                <ul className="space-y-3 mb-6">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center text-gray-600">
-                      <ArrowRight className="h-4 w-4 mr-2 text-primary" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                <div className="flex-grow">
+                  <ul className="space-y-3 mb-6">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center text-gray-600">
+                        <ArrowRight className="h-4 w-4 mr-2 text-primary" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 <Button
                   className="w-full mt-6"
                   size="lg"
@@ -386,9 +390,9 @@ const Index = () => {
           <p className="text-xl mb-8">Join thousands of students and educators across Africa</p>
           <Button
             size="lg"
-            variant="secondary"
+            variant="default"
             onClick={() => navigate("/auth")}
-            className="inline-flex items-center"
+            className="inline-flex items-center bg-white text-primary hover:bg-gray-100"
           >
             Get Started Now
             <ArrowRight className="ml-2 h-4 w-4" />
