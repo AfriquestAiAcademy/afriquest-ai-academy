@@ -3,6 +3,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Brain, Bot, Trophy } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const features = [
   {
@@ -58,18 +59,46 @@ const plans = [
   },
   {
     name: "Student Premium",
-    price: "Premium",
+    price: "$20/month",
     features: ["Advanced AI Tutoring", "Detailed Analytics", "Priority Support"],
   },
   {
+    name: "Family",
+    price: "$50/month",
+    features: ["Up to 3 Student Accounts", "Parent Dashboard", "Family Progress Reports"],
+  },
+  {
     name: "Educator",
-    price: "Contact Us",
+    price: "$100/month",
     features: ["Classroom Management", "Resource Library", "Assessment Tools"],
   },
 ];
 
 const Index = () => {
   const navigate = useNavigate();
+
+  const handlePlanSelection = async (planName: string) => {
+    let paymentLink = '';
+    
+    try {
+      const { data: { secret }, error } = await supabase.functions.invoke('get-secret', {
+        body: {
+          name: `${planName.toUpperCase().replace(' ', '_')}_PAYMENT_LINK`
+        }
+      });
+      
+      if (error) throw error;
+      
+      if (secret) {
+        window.location.href = secret;
+      } else {
+        navigate("/auth");
+      }
+    } catch (error) {
+      console.error('Error getting payment link:', error);
+      navigate("/auth");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -212,7 +241,7 @@ const Index = () => {
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Pricing Plans</h2>
             <p className="text-lg text-gray-600">Choose the perfect plan for your needs</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {plans.map((plan, index) => (
               <div
                 key={index}
@@ -231,7 +260,7 @@ const Index = () => {
                 <Button
                   className="w-full mt-6"
                   variant={index === 1 ? "default" : "outline"}
-                  onClick={() => navigate("/auth")}
+                  onClick={() => handlePlanSelection(plan.name)}
                 >
                   Get Started
                 </Button>
