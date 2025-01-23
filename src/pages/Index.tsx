@@ -55,22 +55,48 @@ const plans = [
   {
     name: "Student Basic",
     price: "Free",
-    features: ["AI Tutoring", "Basic Progress Tracking", "Community Access"],
+    features: [
+      "Basic AI Tutoring",
+      "Progress Tracking",
+      "Community Access",
+      "Limited Study Resources"
+    ],
   },
   {
     name: "Student Premium",
     price: "$20/month",
-    features: ["Advanced AI Tutoring", "Detailed Analytics", "Priority Support"],
+    features: [
+      "Advanced AI Tutoring",
+      "Detailed Analytics",
+      "Priority Support",
+      "Unlimited Study Resources",
+      "Personalized Learning Path",
+      "Access to Premium Competitions"
+    ],
   },
   {
     name: "Family",
     price: "$50/month",
-    features: ["Up to 3 Student Accounts", "Parent Dashboard", "Family Progress Reports"],
+    features: [
+      "Up to 3 Student Accounts",
+      "Parent Dashboard",
+      "Family Progress Reports",
+      "Shared Resources Library",
+      "Priority Support for All Members",
+      "Family Learning Activities"
+    ],
   },
   {
     name: "Educator",
     price: "$100/month",
-    features: ["Classroom Management", "Resource Library", "Assessment Tools"],
+    features: [
+      "Classroom Management Tools",
+      "Advanced Resource Library",
+      "Assessment Creation Tools",
+      "Student Progress Analytics",
+      "Professional Development Resources",
+      "Priority Technical Support"
+    ],
   },
 ];
 
@@ -245,11 +271,13 @@ const Index = () => {
             {plans.map((plan, index) => (
               <div
                 key={index}
-                className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                className={`p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow ${
+                  index === 1 ? 'ring-2 ring-primary' : ''
+                }`}
               >
                 <h3 className="text-xl font-semibold mb-2">{plan.name}</h3>
                 <p className="text-2xl font-bold text-primary mb-4">{plan.price}</p>
-                <ul className="space-y-2">
+                <ul className="space-y-3 mb-6">
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-center text-gray-600">
                       <ArrowRight className="h-4 w-4 mr-2 text-primary" />
