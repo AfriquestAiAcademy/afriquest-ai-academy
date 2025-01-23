@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/react-query";
 import { Toaster } from "sonner";
+import Index from "@/pages/Index";
 import AuthPage from "@/pages/auth/AuthPage";
 import StudentDashboard from "@/pages/student/StudentDashboard";
 import TeacherDashboard from "@/pages/teacher/TeacherDashboard";
@@ -17,6 +18,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Index />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/dashboard/student" element={<StudentLayout />}>
             <Route index element={<StudentDashboard />} />
