@@ -145,26 +145,24 @@ const Index = () => {
   const navigate = useNavigate();
 
   const handlePlanSelection = async (planName: string) => {
+    let paymentLink = '';
+    
     try {
-      const { data, error } = await supabase
-        .from('secrets')
-        .select('value')
-        .eq('name', `${planName.toUpperCase().replace(' ', '_')}_PAYMENT_LINK`)
-        .single();
+      const { data: { secret }, error } = await supabase.functions.invoke('get-secret', {
+        body: {
+          name: `${planName.toUpperCase().replace(' ', '_')}_PAYMENT_LINK`
+        }
+      });
       
-      if (error) {
-        console.error('Error getting payment link:', error);
-        navigate("/auth");
-        return;
-      }
+      if (error) throw error;
       
-      if (data?.value) {
-        window.location.href = data.value;
+      if (secret) {
+        window.location.href = secret;
       } else {
         navigate("/auth");
       }
     } catch (error) {
-      console.error('Error in plan selection:', error);
+      console.error('Error getting payment link:', error);
       navigate("/auth");
     }
   };
