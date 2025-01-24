@@ -145,9 +145,28 @@ const Index = () => {
   const navigate = useNavigate();
 
   const handlePlanSelection = async (planName: string) => {
-    // Redirect to auth page for now since we can't access payment links directly
-    // This maintains security as payment links are managed through Supabase secrets
-    navigate("/auth");
+    try {
+      const { data, error } = await supabase
+        .from('secrets')
+        .select('value')
+        .eq('name', `${planName.toUpperCase().replace(' ', '_')}_PAYMENT_LINK`)
+        .single();
+      
+      if (error) {
+        console.error('Error getting payment link:', error);
+        navigate("/auth");
+        return;
+      }
+      
+      if (data?.value) {
+        window.location.href = data.value;
+      } else {
+        navigate("/auth");
+      }
+    } catch (error) {
+      console.error('Error in plan selection:', error);
+      navigate("/auth");
+    }
   };
 
   return (
