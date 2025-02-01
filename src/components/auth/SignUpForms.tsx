@@ -181,7 +181,7 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
       }
 
       toast.success("Sign up successful! Please check your email to verify your account.");
-      navigate('/auth');
+      navigate(`/dashboard/${role}`);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -663,4 +663,3 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
 };
 
 export default SignUpForms;
-

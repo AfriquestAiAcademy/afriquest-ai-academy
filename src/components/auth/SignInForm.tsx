@@ -81,7 +81,7 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
 
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error, data: authData } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
@@ -92,8 +92,11 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
         return;
       }
 
+      const role = authData.user?.user_metadata?.role || 'student';
+      const dashboardPath = `/dashboard/${role}`;
+      
       toast.success("Signed in successfully!");
-      navigate("/");
+      navigate(dashboardPath);
     } catch (error: any) {
       toast.error("An unexpected error occurred. Please try again.");
       console.error("Sign in error:", error);
