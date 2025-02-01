@@ -157,7 +157,7 @@ const SignUpForms = ({ onToggleForm }: SignUpFormsProps) => {
                 </FormItem>
               )}
             />
-            <PasswordFields form={studentForm} />
+            <PasswordFields control={studentForm.control} isSignUp={true} />
             <FormField
               control={studentForm.control}
               name="username"
@@ -171,7 +171,7 @@ const SignUpForms = ({ onToggleForm }: SignUpFormsProps) => {
                 </FormItem>
               )}
             />
-            <GradeLevelSelect form={studentForm} />
+            <GradeLevelSelect control={studentForm.control} name="gradeLevel" />
             <div className="flex justify-between">
               <Button type="button" variant="outline" onClick={onToggleForm}>
                 Sign In Instead
@@ -200,7 +200,7 @@ const SignUpForms = ({ onToggleForm }: SignUpFormsProps) => {
                 </FormItem>
               )}
             />
-            <PasswordFields form={teacherForm} />
+            <PasswordFields control={teacherForm.control} isSignUp={true} />
             <FormField
               control={teacherForm.control}
               name="username"
@@ -242,7 +242,7 @@ const SignUpForms = ({ onToggleForm }: SignUpFormsProps) => {
                 </FormItem>
               )}
             />
-            <PasswordFields form={parentForm} />
+            <PasswordFields control={parentForm.control} isSignUp={true} />
             <FormField
               control={parentForm.control}
               name="username"
