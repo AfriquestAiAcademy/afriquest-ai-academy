@@ -5,7 +5,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 export default function StudentLayout() {
   return (
     <SidebarProvider>
-      <div className="flex h-screen">
+      <div className="flex min-h-screen w-full">
         <StudentSidebar />
         <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
