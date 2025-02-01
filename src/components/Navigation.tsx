@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, X, LogOut } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -10,6 +10,8 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAuthPage = location.pathname === "/auth";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,6 +42,27 @@ const Navigation = () => {
   const handleLogin = () => {
     navigate("/auth");
   };
+
+  // Don't show navigation elements on auth page
+  if (isAuthPage) {
+    return (
+      <nav
+        className={`fixed w-full z-50 transition-all duration-300 ${
+          isScrolled ? "bg-white/80 backdrop-blur-md shadow-sm" : "bg-transparent"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex-shrink-0">
+              <Link to="/" className="text-xl font-semibold hover:text-primary transition-colors">
+                AfriQuest
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav
