@@ -75,12 +75,6 @@ const parentSchema = withPasswordValidation(
   })
 );
 
-const adminSchema = withPasswordValidation(
-  z.object({
-    ...baseSchema.shape,
-  })
-);
-
 interface SignUpFormsProps {
   onToggleForm: () => void;
   defaultTab?: string;
@@ -136,17 +130,6 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
     },
   });
 
-  const adminForm = useForm({
-    resolver: zodResolver(adminSchema),
-    defaultValues: {
-      fullName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      // adminCode: "", // Removed admin code from default values
-    },
-  });
-
   const handleSignUp = async (data: any, role: string) => {
     setIsLoading(true);
     try {
@@ -191,11 +174,10 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
 
   return (
     <Tabs defaultValue={defaultTab} className="space-y-6">
-      <TabsList className="grid w-full grid-cols-4">
+      <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="student">Student</TabsTrigger>
         <TabsTrigger value="educator">Educator</TabsTrigger>
         <TabsTrigger value="parent">Parent</TabsTrigger>
-        <TabsTrigger value="admin">Admin</TabsTrigger>
       </TabsList>
 
       <TabsContent value="student">
@@ -550,98 +532,6 @@ const SignUpForms = ({ onToggleForm, defaultTab = "student" }: SignUpFormsProps)
                 />
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Signing up..." : "Sign Up as Parent"}
-                </Button>
-                <p className="text-center text-sm text-gray-600">
-                  Already have an account?{" "}
-                  <button
-                    type="button"
-                    onClick={onToggleForm}
-                    className="text-primary hover:underline"
-                  >
-                    Sign in
-                  </button>
-                </p>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-      </TabsContent>
-
-      <TabsContent value="admin">
-        <Card>
-          <CardHeader>
-            <CardTitle>Admin Sign Up</CardTitle>
-            <CardDescription>
-              Create an administrator account with special privileges
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...adminForm}>
-              <form
-                onSubmit={adminForm.handleSubmit((data) =>
-                  handleSignUp(data, "admin")
-                )}
-                className="space-y-4"
-              >
-                <FormField
-                  control={adminForm.control}
-                  name="fullName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Full Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="John Doe" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={adminForm.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="john@example.com"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={adminForm.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={adminForm.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {/* Removed adminCode field */}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Signing up..." : "Sign Up as Admin"}
                 </Button>
                 <p className="text-center text-sm text-gray-600">
                   Already have an account?{" "}
