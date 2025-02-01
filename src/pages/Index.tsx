@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Brain, BookOpen, Bot, Trophy, School, Users, Building2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const features = [
   {
@@ -145,32 +146,62 @@ const Index = () => {
   const navigate = useNavigate();
 
   const handlePlanSelection = async (planName: string) => {
-    let paymentLink = '';
-    
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        navigate("/auth");
+        return;
+      }
+
+      let secretName = '';
+      switch (planName.toLowerCase()) {
+        case 'student premium':
+          secretName = 'PREMIUM_PAYMENT_LINK';
+          break;
+        case 'family':
+          secretName = 'FAMILY_PAYMENT_LINK';
+          break;
+        case 'educator':
+          secretName = 'EDUCATOR_PAYMENT_LINK';
+          break;
+        case 'classroom':
+          secretName = 'CLASSROOM_PAYMENT_LINK';
+          break;
+        case 'school':
+          secretName = 'SCHOOL_PAYMENT_LINK';
+          break;
+        default:
+          navigate("/auth");
+          return;
+      }
+
       const { data: { secret }, error } = await supabase.functions.invoke('get-secret', {
-        body: {
-          name: `${planName.toUpperCase().replace(' ', '_')}_PAYMENT_LINK`
-        }
+        body: { name: secretName }
       });
-      
-      if (error) throw error;
-      
+
+      if (error) {
+        console.error('Error getting payment link:', error);
+        navigate("/auth");
+        return;
+      }
+
       if (secret) {
         window.location.href = secret;
       } else {
         navigate("/auth");
       }
     } catch (error) {
-      console.error('Error getting payment link:', error);
+      console.error('Error in plan selection:', error);
       navigate("/auth");
     }
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <Navigation />
-      
+    <SidebarProvider>
+      <div className="min-h-screen bg-white w-full">
+        <Navigation />
+        
       {/* Hero Section */}
       <section className="relative pt-32 pb-32 overflow-hidden">
         <div className="container px-4 mx-auto">
@@ -218,7 +249,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-
+        
       {/* Features Section */}
       <section className="py-20 bg-gray-50">
         <div className="container px-4 mx-auto">
@@ -240,7 +271,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-
+        
       {/* How It Works */}
       <section className="py-20">
         <div className="container px-4 mx-auto">
@@ -264,7 +295,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-
+        
       {/* Testimonials */}
       <section className="py-20 bg-gray-50">
         <div className="container px-4 mx-auto">
@@ -300,7 +331,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-
+        
       {/* Individual & Family Plans */}
       <section className="py-20">
         <div className="container px-4 mx-auto">
@@ -340,7 +371,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-
+        
       {/* Institutional Plans */}
       <section className="py-20 bg-gray-50">
         <div className="container px-4 mx-auto">
@@ -382,8 +413,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
+        
       <section className="py-20 bg-primary text-white">
         <div className="container px-4 mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Transform Education?</h2>
@@ -400,8 +430,9 @@ const Index = () => {
         </div>
       </section>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </SidebarProvider>
   );
 };
 
