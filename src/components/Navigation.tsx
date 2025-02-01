@@ -8,7 +8,7 @@ import { toast } from "sonner";
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const isAuthPage = location.pathname === "/auth";
@@ -19,8 +19,16 @@ const Navigation = () => {
     };
     window.addEventListener("scroll", handleScroll);
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
     });
 
     return () => {
@@ -53,11 +61,9 @@ const Navigation = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex-shrink-0">
-              <Link to="/" className="text-xl font-semibold hover:text-primary transition-colors">
-                AfriQuest
-              </Link>
-            </div>
+            <Link to="/" className="text-xl font-semibold hover:text-primary transition-colors">
+              AfriQuest
+            </Link>
           </div>
         </div>
       </nav>
@@ -72,11 +78,9 @@ const Navigation = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex-shrink-0">
-            <Link to="/" className="text-xl font-semibold hover:text-primary transition-colors">
-              AfriQuest
-            </Link>
-          </div>
+          <Link to="/" className="text-xl font-semibold hover:text-primary transition-colors">
+            AfriQuest
+          </Link>
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -89,7 +93,7 @@ const Navigation = () => {
             <a href="#contact" className="text-gray-700 hover:text-primary transition-colors">
               Contact
             </a>
-            {user ? (
+            {session ? (
               <Button
                 variant="outline"
                 className="flex items-center gap-2"
@@ -139,7 +143,7 @@ const Navigation = () => {
               >
                 Contact
               </a>
-              {user ? (
+              {session ? (
                 <Button
                   variant="outline"
                   className="w-full justify-center"
