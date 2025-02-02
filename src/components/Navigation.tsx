@@ -20,9 +20,17 @@ const Navigation = () => {
     window.addEventListener("scroll", handleScroll);
 
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
+    const initializeAuth = async () => {
+      try {
+        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        setSession(currentSession);
+      } catch (error) {
+        console.error("Error getting session:", error);
+      }
+    };
+
+    initializeAuth();
 
     // Listen for auth changes
     const {

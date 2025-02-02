@@ -35,7 +35,7 @@ export function ProfileCompletion() {
     { name: "Username", required: true, completed: !!profile?.username },
     { name: "Age", required: true, completed: !!profile?.age },
     { name: "Grade Level", required: true, completed: !!profile?.grade_level },
-    { name: "Subjects of Interest", required: true, completed: !!(profile?.subjects_of_interest?.length ?? 0) > 0 },
+    { name: "Subjects of Interest", required: true, completed: Array.isArray(profile?.subjects_of_interest) && profile.subjects_of_interest.length > 0 },
     { name: "Avatar", required: false, completed: !!profile?.avatar_url },
     { name: "Country", required: false, completed: !!profile?.country },
   ];
