@@ -14,6 +14,7 @@ import TeacherLayout from "@/layouts/TeacherLayout";
 import ParentLayout from "@/layouts/ParentLayout";
 import ProfileSettings from "@/pages/student/ProfileSettings";
 import CommunityHub from "@/pages/community/CommunityHub";
+import { ChatBot } from "@/components/ChatBot";
 
 function App() {
   const [session, setSession] = useState(null);
@@ -97,6 +98,7 @@ function App() {
             <Route index element={<ParentDashboard />} />
           </Route>
         </Routes>
+        {session && <ChatBot />}
       </BrowserRouter>
       <Toaster />
     </QueryClientProvider>

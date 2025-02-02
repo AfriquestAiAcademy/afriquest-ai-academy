@@ -45,7 +45,7 @@ const menuItems = [
     url: "/dashboard/student/assignments",
   },
   {
-    title: "Learning Resources",
+    title: "AI Tutors",
     icon: Book,
     url: "/dashboard/student/resources",
   },
@@ -108,8 +108,8 @@ export function StudentSidebar() {
   };
 
   return (
-    <Sidebar className="fixed left-0 top-0 h-screen">
-      <SidebarContent className="mt-16 flex flex-col h-[calc(100vh-4rem)]">
+    <Sidebar className="fixed left-0 top-16 h-[calc(100vh-4rem)]"> {/* Adjusted top position */}
+      <SidebarContent className="flex flex-col h-full">
         <div className="p-4 border-b">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
