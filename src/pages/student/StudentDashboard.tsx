@@ -8,6 +8,7 @@ import { ProgressTracker } from "@/components/student/dashboard/ProgressTracker"
 import { QuickActions } from "@/components/student/dashboard/QuickActions";
 import { RecentActivity } from "@/components/student/dashboard/RecentActivity";
 import { NotificationsPanel } from "@/components/student/dashboard/NotificationsPanel";
+import { ProfileCompletion } from "@/components/student/dashboard/ProfileCompletion";
 
 export default function StudentDashboard() {
   const [progress, setProgress] = useState(70);
@@ -56,12 +57,6 @@ export default function StudentDashboard() {
           ))}
         </div>
         <Skeleton className="h-40 w-full rounded-lg" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <Skeleton key={i} className="h-24 rounded-lg" />
-          ))}
-        </div>
-        <Skeleton className="h-64 w-full rounded-lg" />
       </div>
     );
   }
@@ -69,6 +64,7 @@ export default function StudentDashboard() {
   return (
     <div className="p-6 space-y-6">
       <WelcomeBanner />
+      <ProfileCompletion />
       <StatsSummary enrollments={enrollments} assignments={assignments} />
       <NotificationsPanel />
       <ProgressTracker progress={progress} />
