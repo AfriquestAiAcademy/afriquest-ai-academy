@@ -9,7 +9,9 @@ import {
   GraduationCap,
   BarChart,
   Search,
-  Bell
+  Bell,
+  PenSquare,
+  MessageCircle
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -19,9 +21,11 @@ import { QandA } from "./QandA";
 import { StudyGroups } from "./StudyGroups";
 import { ResourceHub } from "./ResourceHub";
 import { Leaderboard } from "./Leaderboard";
+import { ChatRooms } from "./ChatRooms";
+import { Polls } from "./Polls";
 
 export default function CommunityHub() {
-  const [activeTab, setActiveTab] = useState("forums");
+  const [activeTab, setActiveTab] = useState("chat");
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
@@ -51,7 +55,11 @@ export default function CommunityHub() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-            <TabsList className="grid grid-cols-6 gap-4">
+            <TabsList className="grid grid-cols-8 gap-4">
+              <TabsTrigger value="chat" className="space-x-2">
+                <MessageCircle className="w-4 h-4" />
+                <span>Chat</span>
+              </TabsTrigger>
               <TabsTrigger value="forums" className="space-x-2">
                 <MessageSquare className="w-4 h-4" />
                 <span>Forums</span>
@@ -72,12 +80,19 @@ export default function CommunityHub() {
                 <GraduationCap className="w-4 h-4" />
                 <span>Resources</span>
               </TabsTrigger>
+              <TabsTrigger value="polls" className="space-x-2">
+                <PenSquare className="w-4 h-4" />
+                <span>Polls</span>
+              </TabsTrigger>
               <TabsTrigger value="leaderboard" className="space-x-2">
                 <BarChart className="w-4 h-4" />
                 <span>Leaderboard</span>
               </TabsTrigger>
             </TabsList>
 
+            <TabsContent value="chat">
+              <ChatRooms />
+            </TabsContent>
             <TabsContent value="forums">
               <Forums />
             </TabsContent>
@@ -92,6 +107,9 @@ export default function CommunityHub() {
             </TabsContent>
             <TabsContent value="resources">
               <ResourceHub searchQuery={searchQuery} />
+            </TabsContent>
+            <TabsContent value="polls">
+              <Polls />
             </TabsContent>
             <TabsContent value="leaderboard">
               <Leaderboard />
