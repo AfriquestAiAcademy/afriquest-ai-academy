@@ -11,14 +11,14 @@ interface Question {
   id: string;
   title: string;
   content: string;
-  subject: string;
-  votes: number;
-  answers_count: number;
-  is_solved: boolean;
+  category: string;
+  likes_count: number;
+  comments_count: number;
   author: {
     full_name: string;
     avatar_url: string;
   };
+  created_at: string;
 }
 
 export function QandA() {
@@ -68,18 +68,16 @@ export function QandA() {
                 <div>
                   <CardTitle className="flex items-center gap-2">
                     {question.title}
-                    {question.is_solved && (
-                      <Badge variant="success" className="bg-green-500">
-                        <Award className="h-3 w-3 mr-1" />
-                        Solved
-                      </Badge>
-                    )}
+                    <Badge variant="outline" className="bg-green-100">
+                      <Award className="h-3 w-3 mr-1" />
+                      Solved
+                    </Badge>
                   </CardTitle>
                   <p className="text-sm text-muted-foreground">
                     Asked by {question.author.full_name}
                   </p>
                 </div>
-                <Badge>{question.subject}</Badge>
+                <Badge>{question.category}</Badge>
               </div>
             </CardHeader>
             <CardContent>
@@ -87,11 +85,11 @@ export function QandA() {
               <div className="flex gap-4">
                 <Button variant="outline" size="sm">
                   <ThumbsUp className="h-4 w-4 mr-2" />
-                  {question.votes}
+                  {question.likes_count}
                 </Button>
                 <Button variant="outline" size="sm">
                   <MessageSquare className="h-4 w-4 mr-2" />
-                  {question.answers_count} answers
+                  {question.comments_count} answers
                 </Button>
               </div>
             </CardContent>

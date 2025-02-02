@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -10,12 +10,14 @@ interface StudyRoom {
   id: string;
   name: string;
   subject: string;
-  participants: number;
-  is_active: boolean;
+  member_count: number;
+  description: string;
+  creator_id: string;
   host: {
     full_name: string;
     avatar_url: string;
   };
+  created_at: string;
 }
 
 export function LiveStudy() {
@@ -30,7 +32,6 @@ export function LiveStudy() {
           *,
           host:profiles(full_name, avatar_url)
         `)
-        .eq('is_active', true)
         .order('created_at', { ascending: false });
 
       if (searchQuery) {
@@ -72,7 +73,7 @@ export function LiveStudy() {
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <span className="flex items-center">
                   <Users className="h-4 w-4 mr-1" />
-                  {room.participants} participants
+                  {room.member_count} participants
                 </span>
                 <span>{room.subject}</span>
               </div>

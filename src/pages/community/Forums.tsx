@@ -4,19 +4,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageSquare, BookOpen, Users, School } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 
 interface ForumPost {
   id: string;
   title: string;
   content: string;
-  subject: string;
+  category: string;
   author: {
     full_name: string;
     avatar_url: string;
   };
   created_at: string;
   comments_count: number;
+  likes_count: number;
 }
 
 export function Forums() {
@@ -35,7 +36,7 @@ export function Forums() {
         .order('created_at', { ascending: false });
 
       if (activeSubject !== 'all') {
-        query = query.eq('subject', activeSubject);
+        query = query.eq('category', activeSubject);
       }
 
       const { data, error } = await query;
