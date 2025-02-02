@@ -15,11 +15,16 @@ import {
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 
+interface PollOption {
+  text: string;
+  votes: number;
+}
+
 interface Poll {
   id: string;
   title: string;
   description: string | null;
-  options: { text: string; votes: number }[];
+  options: PollOption[];
   created_at: string;
   profiles: {
     full_name: string | null;
@@ -46,7 +51,12 @@ export function Polls() {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data as Poll[];
+      
+      // Transform the data to match our Poll interface
+      return (data as any[]).map(poll => ({
+        ...poll,
+        options: Array.isArray(poll.options) ? poll.options : JSON.parse(poll.options)
+      })) as Poll[];
     },
   });
 

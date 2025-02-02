@@ -39,6 +39,15 @@ export function ChatRooms() {
   const [message, setMessage] = useState("");
   const [newRoomName, setNewRoomName] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUserId(user?.id || null);
+    };
+    getCurrentUser();
+  }, []);
 
   const { data: chatRooms, isLoading: isLoadingRooms } = useQuery({
     queryKey: ['chatRooms'],
@@ -55,7 +64,6 @@ export function ChatRooms() {
 
   useEffect(() => {
     if (selectedRoom) {
-      // Subscribe to new messages
       const channel = supabase
         .channel('chat-messages')
         .on(
@@ -72,7 +80,6 @@ export function ChatRooms() {
         )
         .subscribe();
 
-      // Load existing messages
       loadMessages();
 
       return () => {
@@ -107,12 +114,18 @@ export function ChatRooms() {
   const createRoom = async () => {
     if (!newRoomName.trim()) return;
 
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error("You must be logged in to create a room");
+      return;
+    }
+
     const { error } = await supabase
       .from('chat_rooms')
       .insert({
         name: newRoomName.trim(),
         type: 'general',
-        created_by: (await supabase.auth.getUser()).data.user?.id,
+        created_by: user.id,
       });
 
     if (error) {
@@ -127,12 +140,18 @@ export function ChatRooms() {
   const sendMessage = async () => {
     if (!message.trim() || !selectedRoom) return;
 
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error("You must be logged in to send messages");
+      return;
+    }
+
     const { error } = await supabase
       .from('chat_messages')
       .insert({
         content: message.trim(),
         room_id: selectedRoom,
-        sender_id: (await supabase.auth.getUser()).data.user?.id,
+        sender_id: user.id,
       });
 
     if (error) {
@@ -202,14 +221,14 @@ export function ChatRooms() {
                   <div
                     key={msg.id}
                     className={`flex ${
-                      msg.sender_id === (supabase.auth.getUser()).data.user?.id
+                      msg.sender_id === currentUserId
                         ? "justify-end"
                         : "justify-start"
                     }`}
                   >
                     <div
                       className={`max-w-[70%] rounded-lg p-3 ${
-                        msg.sender_id === (supabase.auth.getUser()).data.user?.id
+                        msg.sender_id === currentUserId
                           ? "bg-primary text-primary-foreground"
                           : "bg-muted"
                       }`}
