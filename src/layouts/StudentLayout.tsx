@@ -7,10 +7,10 @@ import { ChatBot } from "@/components/ChatBot";
 export default function StudentLayout() {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
+      <div className="min-h-screen flex w-full bg-background">
         <DashboardHeader />
         <StudentSidebar />
-        <main className="flex-1 overflow-y-auto p-6 mt-16 ml-64">
+        <main className="flex-1 p-6 mt-16 ml-64">
           <Outlet />
         </main>
         <ChatBot />
