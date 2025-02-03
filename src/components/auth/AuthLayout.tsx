@@ -17,8 +17,8 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
         </Link>
       </header>
 
-      <main className="flex-grow container mx-auto px-4 py-16 mt-16">
-        <div className="max-w-4xl mx-auto">
+      <main className="flex-grow flex items-center justify-center px-4 py-16 mt-16">
+        <div className="w-full max-w-xl">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Join AfriQuest AI Academy
