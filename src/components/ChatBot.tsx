@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 interface Message {
   role: "user" | "assistant";
@@ -13,6 +14,7 @@ interface Message {
 }
 
 export function ChatBot() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -20,18 +22,38 @@ export function ChatBot() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null);
-    });
+    // Check current session and set up auth state listener
+    const checkSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Session error:", error);
+          navigate("/auth");
+          return;
+        }
+        setUser(session?.user || null);
+      } catch (error) {
+        console.error("Auth error:", error);
+        navigate("/auth");
+      }
+    };
+
+    checkSession();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+        setUser(null);
+        navigate("/auth");
+      } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        setUser(session?.user || null);
+      }
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +65,14 @@ export function ChatBot() {
     setIsLoading(true);
 
     try {
+      // Check session before making the request
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Please sign in to continue");
+        navigate("/auth");
+        return;
+      }
+
       // Store the interaction in the database with user_id
       const { error: dbError } = await supabase
         .from('ai_interactions')
@@ -78,7 +108,12 @@ export function ChatBot() {
       setMessages((prev) => [...prev, { role: "assistant", content: data.message }]);
     } catch (error: any) {
       console.error("Chat error:", error);
-      toast.error("Failed to get response. Please try again.");
+      if (error.message?.includes('Invalid Refresh Token')) {
+        toast.error("Session expired. Please sign in again.");
+        navigate("/auth");
+      } else {
+        toast.error("Failed to get response. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
