@@ -42,7 +42,7 @@ export function ChatBot() {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+      if (event === 'SIGNED_OUT') {
         setUser(null);
         navigate("/auth");
       } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
