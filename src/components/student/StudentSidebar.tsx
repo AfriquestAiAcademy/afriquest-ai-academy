@@ -108,7 +108,7 @@ export function StudentSidebar() {
   };
 
   return (
-    <Sidebar className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 border-r">
+    <Sidebar className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 border-r bg-white">
       <SidebarContent className="flex flex-col h-full">
         <div className="p-4 border-b">
           <div className="flex items-center justify-between">
