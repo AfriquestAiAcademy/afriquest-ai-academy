@@ -49,7 +49,7 @@ export default function StudentDashboard() {
 
   if (isLoading) {
     return (
-      <div className="px-4 space-y-6 max-w-[1200px] mx-auto">
+      <div className="px-4 space-y-6">
         <Skeleton className="h-24 w-full rounded-lg" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
@@ -62,7 +62,7 @@ export default function StudentDashboard() {
   }
 
   return (
-    <div className="px-4 space-y-6 max-w-[1200px] mx-auto">
+    <div className="px-4 space-y-6 max-w-[1200px]">
       <WelcomeBanner />
       <ProfileCompletion />
       <StatsSummary enrollments={enrollments} assignments={assignments} />
