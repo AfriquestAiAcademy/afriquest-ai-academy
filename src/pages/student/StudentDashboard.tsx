@@ -1,15 +1,3 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Skeleton } from "@/components/ui/skeleton";
-import { WelcomeBanner } from "@/components/student/dashboard/WelcomeBanner";
-import { StatsSummary } from "@/components/student/dashboard/StatsSummary";
-import { ProgressTracker } from "@/components/student/dashboard/ProgressTracker";
-import { QuickActions } from "@/components/student/dashboard/QuickActions";
-import { RecentActivity } from "@/components/student/dashboard/RecentActivity";
-import { NotificationsPanel } from "@/components/student/dashboard/NotificationsPanel";
-import { ProfileCompletion } from "@/components/student/dashboard/ProfileCompletion";
-
 export default function StudentDashboard() {
   const [progress, setProgress] = useState(70);
 
@@ -49,7 +37,7 @@ export default function StudentDashboard() {
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-6">
+      <div className="px-4 space-y-6 max-w-[1200px] mx-auto">
         <Skeleton className="h-24 w-full rounded-lg" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
@@ -62,7 +50,7 @@ export default function StudentDashboard() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="px-4 space-y-6 max-w-[1200px] mx-auto">
       <WelcomeBanner />
       <ProfileCompletion />
       <StatsSummary enrollments={enrollments} assignments={assignments} />
