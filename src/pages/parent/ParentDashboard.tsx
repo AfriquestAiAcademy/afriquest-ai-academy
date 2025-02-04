@@ -1,17 +1,45 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DashboardHeader } from "@/components/DashboardHeader";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export default function ParentDashboard() {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.success("Logged out successfully");
+      navigate("/");
+    } catch (error) {
+      toast.error("Error logging out");
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Parent Dashboard</h1>
-      <Card>
-        <CardHeader>
-          <CardTitle>Welcome to AfriQuest AI Academy</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>Monitor your child's progress and stay involved in their learning journey.</p>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-white">
+      <DashboardHeader />
+      <main className="pt-24 px-6">
+        <div className="max-w-4xl mx-auto text-center space-y-6">
+          <h1 className="text-4xl font-bold text-gray-900">
+            Parent Dashboard Coming Soon
+          </h1>
+          <p className="text-lg text-gray-600">
+            We're working hard to bring you the best tools to support your child's education journey.
+            Stay tuned for updates!
+          </p>
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            className="mt-8"
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Log Out
+          </Button>
+        </div>
+      </main>
     </div>
   );
 }
