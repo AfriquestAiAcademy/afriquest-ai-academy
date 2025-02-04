@@ -147,13 +147,17 @@ const Index = () => {
 
   const handlePlanSelection = async (planName: string) => {
     try {
+      // Check if user is logged in
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
+        // Store the selected plan in localStorage to redirect after login
+        localStorage.setItem('selectedPlan', planName);
         navigate("/auth");
         return;
       }
 
+      // Map plan names to secret names
       let secretName = '';
       switch (planName.toLowerCase()) {
         case 'student premium':
@@ -172,28 +176,28 @@ const Index = () => {
           secretName = 'SCHOOL_PAYMENT_LINK';
           break;
         default:
-          navigate("/auth");
+          console.error('Invalid plan selected');
           return;
       }
 
-      const { data: { secret }, error } = await supabase.functions.invoke('get-secret', {
+      // Get the payment link from Supabase edge function
+      const { data, error } = await supabase.functions.invoke('get-secret', {
         body: { name: secretName }
       });
 
       if (error) {
         console.error('Error getting payment link:', error);
-        navigate("/auth");
         return;
       }
 
-      if (secret) {
-        window.location.href = secret;
+      if (data?.secret) {
+        // Redirect to the payment link
+        window.location.href = data.secret;
       } else {
-        navigate("/auth");
+        console.error('Payment link not found');
       }
     } catch (error) {
       console.error('Error in plan selection:', error);
-      navigate("/auth");
     }
   };
 

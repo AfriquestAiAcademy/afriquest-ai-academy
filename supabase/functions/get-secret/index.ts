@@ -14,6 +14,24 @@ serve(async (req) => {
   try {
     const { name } = await req.json()
     
+    // List of allowed secret names for payment links
+    const allowedSecrets = [
+      'PREMIUM_PAYMENT_LINK',
+      'FAMILY_PAYMENT_LINK',
+      'EDUCATOR_PAYMENT_LINK',
+      'CLASSROOM_PAYMENT_LINK',
+      'SCHOOL_PAYMENT_LINK'
+    ]
+
+    // Validate the requested secret name
+    if (!allowedSecrets.includes(name)) {
+      console.error(`Invalid secret name requested: ${name}`)
+      return new Response(
+        JSON.stringify({ error: 'Invalid secret name' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      )
+    }
+
     // Get the secret from environment variables
     const secret = Deno.env.get(name)
     
@@ -25,6 +43,7 @@ serve(async (req) => {
       )
     }
 
+    // Return the secret
     return new Response(
       JSON.stringify({ secret }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
