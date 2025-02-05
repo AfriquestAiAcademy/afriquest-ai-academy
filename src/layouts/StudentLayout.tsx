@@ -10,7 +10,7 @@ export default function StudentLayout() {
       <div className="min-h-screen flex w-full bg-background">
         <DashboardHeader />
         <StudentSidebar />
-        <main className="flex-1 p-6 mt-16 ml-64">
+        <main className="flex-1 p-6 mt-16">
           <Outlet />
         </main>
         <ChatBot />
