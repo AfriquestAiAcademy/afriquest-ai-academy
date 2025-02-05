@@ -21,13 +21,15 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
         return;
       }
 
+      // Get the payment link from Supabase secrets
       const { data, error } = await supabase.functions.invoke('get-payment-link', {
-        body: { plan, userId: user.id }
+        body: { plan }
       });
 
       if (error) throw error;
       if (data?.url) {
-        window.location.href = data.url;
+        // Open the payment link in a new tab
+        window.open(data.url, '_blank');
       }
     } catch (error) {
       console.error('Subscription error:', error);
@@ -62,6 +64,7 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
               onClick={() => handleSubscribe('basic')}
               className="mt-4"
               variant="outline"
+              disabled={loading === 'basic'}
             >
               Get Started
             </Button>
@@ -88,6 +91,7 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
             <Button
               onClick={() => handleSubscribe('premium')}
               className="mt-4"
+              disabled={loading === 'premium'}
             >
               Start Premium
             </Button>
@@ -112,6 +116,7 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
               onClick={() => handleSubscribe('family')}
               className="mt-4"
               variant="outline"
+              disabled={loading === 'family'}
             >
               Start Family Plan
             </Button>
@@ -138,6 +143,7 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
                 onClick={() => handleSubscribe('success-pack')}
                 className="mt-2"
                 variant="secondary"
+                disabled={loading === 'success-pack'}
               >
                 Get Success Pack
               </Button>
