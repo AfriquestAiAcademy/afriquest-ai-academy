@@ -1,4 +1,4 @@
-import { Home, LogOut, BookOpen, Trophy, User } from "lucide-react";
+import { Home, LogOut, BookOpen, Trophy, User, GraduationCap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,7 +44,7 @@ export function AppSidebar() {
     try {
       await supabase.auth.signOut();
       toast.success("Logged out successfully");
-      navigate("/auth");
+      navigate("/");
     } catch (error) {
       toast.error("Error logging out");
     }
@@ -53,6 +53,12 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
+        <div className="p-4">
+          <div className="flex items-center space-x-2">
+            <GraduationCap className="h-6 w-6 text-primary" />
+            <span className="text-lg font-semibold">AfriQuest AI Academy</span>
+          </div>
+        </div>
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>

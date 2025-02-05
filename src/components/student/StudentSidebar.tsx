@@ -10,6 +10,7 @@ import {
   LogOut,
   Bell,
   Circle,
+  GraduationCap,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -101,7 +102,7 @@ export function StudentSidebar() {
     try {
       await supabase.auth.signOut();
       toast.success("Logged out successfully");
-      navigate("/auth");
+      navigate("/");
     } catch (error) {
       toast.error("Error logging out");
     }
@@ -111,30 +112,24 @@ export function StudentSidebar() {
     <Sidebar className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 border-r bg-white">
       <SidebarContent className="flex flex-col h-full">
         <div className="p-4 border-b">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Avatar>
-                <AvatarImage src={profile?.avatar_url} />
-                <AvatarFallback>
-                  {profile?.full_name?.[0] || profile?.username?.[0] || "S"}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col">
-                <span className="font-medium">
-                  {profile?.full_name || profile?.username || "Student"}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {profile?.education_level || "Student"}
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="relative p-2 rounded-full hover:bg-accent">
-                <Bell className="h-5 w-5" />
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center bg-primary text-primary-foreground">
-                  3
-                </Badge>
-              </button>
+          <div className="flex items-center space-x-2 mb-4">
+            <GraduationCap className="h-6 w-6 text-primary" />
+            <span className="text-lg font-semibold">AfriQuest AI Academy</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Avatar>
+              <AvatarImage src={profile?.avatar_url} />
+              <AvatarFallback>
+                {profile?.full_name?.[0] || profile?.username?.[0] || "S"}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <span className="font-medium">
+                {profile?.full_name || profile?.username || "Student"}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {profile?.education_level || "Student"}
+              </span>
             </div>
           </div>
         </div>

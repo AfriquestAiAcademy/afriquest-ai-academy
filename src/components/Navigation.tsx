@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, LogOut } from "lucide-react";
+import { Menu, X, LogOut, GraduationCap } from "lucide-react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -69,8 +69,9 @@ const Navigation = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="text-xl font-semibold hover:text-primary transition-colors">
-              AfriQuest
+            <Link to="/" className="flex items-center space-x-2 text-xl font-semibold hover:text-primary transition-colors">
+              <GraduationCap className="h-6 w-6" />
+              <span>AfriQuest AI Academy</span>
             </Link>
           </div>
         </div>
@@ -86,8 +87,9 @@ const Navigation = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link to="/" className="text-xl font-semibold hover:text-primary transition-colors">
-            AfriQuest
+          <Link to="/" className="flex items-center space-x-2 text-xl font-semibold hover:text-primary transition-colors">
+            <GraduationCap className="h-6 w-6" />
+            <span>AfriQuest AI Academy</span>
           </Link>
           
           {/* Desktop Navigation */}
