@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { ParentSidebar } from "@/components/ParentSidebar";
+import { ParentSidebar } from "@/components/parent/ParentSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { ChatBot } from "@/components/ChatBot";
