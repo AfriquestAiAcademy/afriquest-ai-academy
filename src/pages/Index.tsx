@@ -55,12 +55,13 @@ const steps = [
 const plans = [
   {
     name: "Basic",
-    price: "Free",
+    price: "$4.99/month",
     features: [
       "Limited AI tutoring sessions",
       "Basic progress tracking",
       "Community forums access",
-      "Join public study groups"
+      "Join public study groups",
+      "7 days free trial"
     ],
   },
   {
@@ -73,7 +74,8 @@ const plans = [
       "Personalized learning paths",
       "Premium learning resources",
       "Achievement system",
-      "Save chat history"
+      "Save chat history",
+      "7 days free trial"
     ],
   },
   {
@@ -86,7 +88,8 @@ const plans = [
       "Shared resources library",
       "Group tutoring sessions",
       "Priority support",
-      "Custom learning paths"
+      "Custom learning paths",
+      "7 days free trial"
     ],
   },
 ];

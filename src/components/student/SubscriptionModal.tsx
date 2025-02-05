@@ -50,9 +50,10 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
         <div className="grid gap-6 md:grid-cols-3">
           <div className="rounded-lg border p-4 flex flex-col">
             <h3 className="font-semibold text-lg">Basic</h3>
-            <p className="text-sm text-muted-foreground mt-2">Get started for free</p>
+            <p className="text-sm text-muted-foreground mt-2">Start your learning journey</p>
             <div className="mt-4">
-              <p className="font-bold text-2xl">Free</p>
+              <p className="font-bold text-2xl">$4.99<span className="text-sm font-normal">/mo</span></p>
+              <p className="text-sm text-muted-foreground">7 days free trial</p>
             </div>
             <ul className="mt-4 space-y-2 text-sm flex-grow">
               <li>✓ Limited AI tutoring sessions</li>
@@ -66,7 +67,7 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
               variant="outline"
               disabled={loading === 'basic'}
             >
-              Get Started
+              Start Free Trial
             </Button>
           </div>
 
@@ -77,7 +78,8 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
             <h3 className="font-semibold text-lg">Premium</h3>
             <p className="text-sm text-muted-foreground mt-2">Everything you need</p>
             <div className="mt-4">
-              <p className="font-bold text-2xl">$9.99/mo</p>
+              <p className="font-bold text-2xl">$9.99<span className="text-sm font-normal">/mo</span></p>
+              <p className="text-sm text-muted-foreground">7 days free trial</p>
             </div>
             <ul className="mt-4 space-y-2 text-sm flex-grow">
               <li>✓ Unlimited AI tutoring</li>
@@ -93,7 +95,7 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
               className="mt-4"
               disabled={loading === 'premium'}
             >
-              Start Premium
+              Start Free Trial
             </Button>
           </div>
 
@@ -101,7 +103,8 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
             <h3 className="font-semibold text-lg">Family</h3>
             <p className="text-sm text-muted-foreground mt-2">Perfect for families</p>
             <div className="mt-4">
-              <p className="font-bold text-2xl">$24.99/mo</p>
+              <p className="font-bold text-2xl">$24.99<span className="text-sm font-normal">/mo</span></p>
+              <p className="text-sm text-muted-foreground">7 days free trial</p>
             </div>
             <ul className="mt-4 space-y-2 text-sm flex-grow">
               <li>✓ Up to 4 student accounts</li>
@@ -118,7 +121,7 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
               variant="outline"
               disabled={loading === 'family'}
             >
-              Start Family Plan
+              Start Free Trial
             </Button>
           </div>
         </div>
