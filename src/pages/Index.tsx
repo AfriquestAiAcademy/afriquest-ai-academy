@@ -54,113 +54,73 @@ const steps = [
 
 const plans = [
   {
-    name: "Student Basic",
+    name: "Basic",
     price: "Free",
     features: [
-      "Basic AI Tutoring",
-      "Progress Tracking",
-      "Community Access",
-      "Limited Study Resources"
+      "Limited AI tutoring sessions",
+      "Basic progress tracking",
+      "Community forums access",
+      "Join public study groups"
     ],
   },
   {
-    name: "Student Premium",
-    price: "$20/month",
+    name: "Premium",
+    price: "$9.99/month",
     features: [
-      "Advanced AI Tutoring",
-      "Detailed Analytics",
-      "Priority Support",
-      "Unlimited Study Resources",
-      "Personalized Learning Path",
-      "Access to Premium Competitions"
+      "Unlimited AI tutoring",
+      "Advanced progress tracking",
+      "Create private study groups",
+      "Personalized learning paths",
+      "Premium learning resources",
+      "Achievement system",
+      "Save chat history"
     ],
   },
   {
     name: "Family",
-    price: "$50/month",
+    price: "$24.99/month",
     features: [
-      "Up to 3 Student Accounts",
-      "Parent Dashboard",
-      "Family Progress Reports",
-      "Shared Resources Library",
-      "Priority Support for All Members",
-      "Family Learning Activities"
-    ],
-  },
-  {
-    name: "Educator",
-    price: "$100/month",
-    features: [
-      "Classroom Management Tools",
-      "Advanced Resource Library",
-      "Assessment Creation Tools",
-      "Student Progress Analytics",
-      "Professional Development Resources",
-      "Priority Technical Support"
+      "Up to 4 student accounts",
+      "Parent dashboard",
+      "Family progress reports",
+      "Shared resources library",
+      "Group tutoring sessions",
+      "Priority support",
+      "Custom learning paths"
     ],
   },
 ];
 
-const institutionalPlans = [
-  {
-    name: "Classroom",
-    price: "$250/month",
-    icon: <Users className="h-12 w-12 text-primary mb-4" />,
-    description: "Perfect for individual classes up to 25 students",
-    features: [
-      "Up to 25 students per class",
-      "All Premium features for each student",
-      "Class dashboard & analytics",
-      "Collaborative tools & resources",
-      "Bulk assignment management",
-      "Parent access portal",
-      "Class-specific study groups",
-      "Priority classroom support"
-    ],
-  },
-  {
-    name: "School",
-    price: "$1000/month",
-    icon: <Building2 className="h-12 w-12 text-primary mb-4" />,
-    description: "Ideal for entire schools up to 5 classes (125 students)",
-    features: [
-      "Up to 5 classes (125 students total)",
-      "All Classroom Plan features",
-      "School-wide dashboard",
-      "Administrative controls",
-      "Cross-class collaboration",
-      "School performance analytics",
-      "Custom branding options",
-      "Dedicated account manager",
-      "Teacher training resources",
-      "School-wide competitions",
-      "Integration with school systems",
-      "Bulk student/teacher onboarding",
-      "Annual performance reports",
-      "Emergency technical support"
-    ],
-  },
-];
+const specialOffer = {
+  name: "Student Success Pack",
+  price: "$99",
+  description: "One-time purchase, lifetime value",
+  features: [
+    "6 months Premium access",
+    "Study skills masterclass",
+    "Exam preparation toolkit",
+    "3 one-on-one tutoring sessions",
+    "Lifetime access to recorded workshops",
+    "College application guidance"
+  ],
+};
 
 const Index = () => {
   const navigate = useNavigate();
 
   const handlePlanSelection = async (planName: string) => {
     try {
-      // Check if user is logged in
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
-        // Store the selected plan in localStorage to redirect after login
         localStorage.setItem('selectedPlan', planName);
         navigate("/auth");
         return;
       }
 
-      // Map plan names to secret names
       let secretName = '';
       switch (planName.toLowerCase()) {
-        case 'student premium':
+        case 'premium':
           secretName = 'PREMIUM_PAYMENT_LINK';
           break;
         case 'family':
@@ -180,7 +140,6 @@ const Index = () => {
           return;
       }
 
-      // Get the payment link from Supabase edge function
       const { data, error } = await supabase.functions.invoke('get-secret', {
         body: { name: secretName }
       });
@@ -191,7 +150,6 @@ const Index = () => {
       }
 
       if (data?.secret) {
-        // Redirect to the payment link
         window.location.href = data.secret;
       } else {
         console.error('Payment link not found');
@@ -340,10 +298,10 @@ const Index = () => {
       <section className="py-20">
         <div className="container px-4 mx-auto">
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Individual & Family Plans</h2>
-            <p className="text-lg text-gray-600">Choose the perfect plan for your personal learning journey</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Choose Your Plan</h2>
+            <p className="text-lg text-gray-600">Start your learning journey today</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             {plans.map((plan, index) => (
               <div
                 key={index}
@@ -368,52 +326,40 @@ const Index = () => {
                   variant={index === 1 ? "default" : "outline"}
                   onClick={() => handlePlanSelection(plan.name)}
                 >
-                  Get Started
+                  {index === 0 ? 'Get Started' : 'Subscribe Now'}
                 </Button>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-        
-      {/* Institutional Plans */}
-      <section className="py-20 bg-gray-50">
-        <div className="container px-4 mx-auto">
-          <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Institutional Plans</h2>
-            <p className="text-lg text-gray-600">Empower your classroom or entire school with our institutional solutions</p>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {institutionalPlans.map((plan, index) => (
-              <div
-                key={index}
-                className="flex flex-col p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow h-full"
-              >
-                <div className="text-center mb-6">
-                  {plan.icon}
-                  <h3 className="text-2xl font-semibold mb-2">{plan.name} Plan</h3>
-                  <p className="text-3xl font-bold text-primary mb-2">{plan.price}</p>
-                  <p className="text-gray-600">{plan.description}</p>
-                </div>
-                <div className="flex-grow">
-                  <ul className="space-y-3 mb-6">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center text-gray-600">
+
+          {/* Special Offer */}
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-secondary/20 rounded-xl p-8">
+              <div className="flex flex-col md:flex-row justify-between items-center">
+                <div className="mb-6 md:mb-0">
+                  <h3 className="text-xl font-semibold mb-2">{specialOffer.name}</h3>
+                  <p className="text-gray-600 mb-4">{specialOffer.description}</p>
+                  <ul className="space-y-2">
+                    {specialOffer.features.map((feature, index) => (
+                      <li key={index} className="flex items-center text-gray-600">
                         <ArrowRight className="h-4 w-4 mr-2 text-primary" />
                         {feature}
                       </li>
                     ))}
                   </ul>
                 </div>
-                <Button
-                  className="w-full mt-6"
-                  size="lg"
-                  onClick={() => handlePlanSelection(plan.name)}
-                >
-                  Get Started
-                </Button>
+                <div className="text-center md:text-right">
+                  <p className="text-3xl font-bold text-primary mb-2">{specialOffer.price}</p>
+                  <p className="text-sm text-gray-600 mb-4">One-time payment</p>
+                  <Button
+                    size="lg"
+                    onClick={() => handlePlanSelection('success-pack')}
+                  >
+                    Get Success Pack
+                  </Button>
+                </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>

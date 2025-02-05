@@ -39,7 +39,7 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[800px]">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center mb-4">
             Choose Your Plan
@@ -47,28 +47,55 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
         </DialogHeader>
         <div className="grid gap-6 md:grid-cols-3">
           <div className="rounded-lg border p-4 flex flex-col">
+            <h3 className="font-semibold text-lg">Basic</h3>
+            <p className="text-sm text-muted-foreground mt-2">Get started for free</p>
+            <div className="mt-4">
+              <p className="font-bold text-2xl">Free</p>
+            </div>
+            <ul className="mt-4 space-y-2 text-sm flex-grow">
+              <li>✓ Limited AI tutoring sessions</li>
+              <li>✓ Basic progress tracking</li>
+              <li>✓ Community forums access</li>
+              <li>✓ Join public study groups</li>
+            </ul>
+            <Button
+              onClick={() => handleSubscribe('basic')}
+              className="mt-4"
+              variant="outline"
+            >
+              Get Started
+            </Button>
+          </div>
+
+          <div className="rounded-lg border p-4 flex flex-col border-primary bg-primary/5">
+            <div className="absolute -top-3 right-4 px-3 py-1 bg-primary text-white text-xs rounded-full">
+              Most Popular
+            </div>
             <h3 className="font-semibold text-lg">Premium</h3>
-            <p className="text-sm text-muted-foreground mt-2">Perfect for individual students</p>
+            <p className="text-sm text-muted-foreground mt-2">Everything you need</p>
             <div className="mt-4">
               <p className="font-bold text-2xl">$9.99/mo</p>
             </div>
             <ul className="mt-4 space-y-2 text-sm flex-grow">
               <li>✓ Unlimited AI tutoring</li>
-              <li>✓ Homework assistance</li>
-              <li>✓ Progress tracking</li>
+              <li>✓ Advanced progress tracking</li>
+              <li>✓ Create private study groups</li>
+              <li>✓ Personalized learning paths</li>
+              <li>✓ Premium learning resources</li>
+              <li>✓ Achievement system</li>
+              <li>✓ Save chat history</li>
             </ul>
             <Button
               onClick={() => handleSubscribe('premium')}
               className="mt-4"
-              disabled={loading === 'premium'}
             >
-              {loading === 'premium' ? 'Processing...' : 'Get Started'}
+              Start Premium
             </Button>
           </div>
 
-          <div className="rounded-lg border p-4 flex flex-col border-primary bg-primary/5">
+          <div className="rounded-lg border p-4 flex flex-col">
             <h3 className="font-semibold text-lg">Family</h3>
-            <p className="text-sm text-muted-foreground mt-2">Great for families</p>
+            <p className="text-sm text-muted-foreground mt-2">Perfect for families</p>
             <div className="mt-4">
               <p className="font-bold text-2xl">$24.99/mo</p>
             </div>
@@ -76,36 +103,45 @@ export function SubscriptionModal({ open, onOpenChange }: SubscriptionModalProps
               <li>✓ Up to 4 student accounts</li>
               <li>✓ Parent dashboard</li>
               <li>✓ Family progress reports</li>
-              <li>✓ All Premium features</li>
+              <li>✓ Shared resources library</li>
+              <li>✓ Group tutoring sessions</li>
+              <li>✓ Priority support</li>
+              <li>✓ Custom learning paths</li>
             </ul>
             <Button
               onClick={() => handleSubscribe('family')}
               className="mt-4"
-              disabled={loading === 'family'}
+              variant="outline"
             >
-              {loading === 'family' ? 'Processing...' : 'Best Value'}
+              Start Family Plan
             </Button>
           </div>
+        </div>
 
-          <div className="rounded-lg border p-4 flex flex-col">
-            <h3 className="font-semibold text-lg">Classroom</h3>
-            <p className="text-sm text-muted-foreground mt-2">For educators</p>
-            <div className="mt-4">
-              <p className="font-bold text-2xl">$99.99/mo</p>
+        <div className="mt-6 p-4 bg-secondary/20 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-lg">Student Success Pack</h3>
+              <p className="text-sm text-muted-foreground">One-time purchase, lifetime value</p>
+              <ul className="mt-2 space-y-1 text-sm">
+                <li>✓ 6 months Premium access</li>
+                <li>✓ Study skills masterclass</li>
+                <li>✓ Exam preparation toolkit</li>
+                <li>✓ 3 one-on-one tutoring sessions</li>
+                <li>✓ Lifetime access to recorded workshops</li>
+              </ul>
             </div>
-            <ul className="mt-4 space-y-2 text-sm flex-grow">
-              <li>✓ Up to 30 student accounts</li>
-              <li>✓ Teacher dashboard</li>
-              <li>✓ Detailed analytics</li>
-              <li>✓ All Premium features</li>
-            </ul>
-            <Button
-              onClick={() => handleSubscribe('classroom')}
-              className="mt-4"
-              disabled={loading === 'classroom'}
-            >
-              {loading === 'classroom' ? 'Processing...' : 'Get Started'}
-            </Button>
+            <div className="text-right">
+              <p className="font-bold text-2xl">$99</p>
+              <p className="text-sm text-muted-foreground">One-time payment</p>
+              <Button
+                onClick={() => handleSubscribe('success-pack')}
+                className="mt-2"
+                variant="secondary"
+              >
+                Get Success Pack
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>
