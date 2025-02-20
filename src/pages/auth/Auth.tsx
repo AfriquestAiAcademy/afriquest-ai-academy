@@ -13,13 +13,19 @@ import * as z from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+// Define the role type
+type UserRole = "student" | "teacher" | "parent";
+
 const authSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   full_name: z.string().min(2, "Name must be at least 2 characters").optional(),
   grade_level: z.string().optional(),
-  role: z.enum(["student", "teacher", "parent"]).default("student"),
+  role: z.enum(["student", "teacher", "parent"] as const),
 });
+
+// Infer the type from the schema
+type AuthFormValues = z.infer<typeof authSchema>;
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -48,7 +54,7 @@ export default function Auth() {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const form = useForm({
+  const form = useForm<AuthFormValues>({
     resolver: zodResolver(authSchema),
     defaultValues: {
       email: "",
@@ -59,7 +65,7 @@ export default function Auth() {
     },
   });
 
-  const onSignIn = async (values: z.infer<typeof authSchema>) => {
+  const onSignIn = async (values: AuthFormValues) => {
     try {
       setIsLoading(true);
       const { error } = await supabase.auth.signInWithPassword({
@@ -77,7 +83,7 @@ export default function Auth() {
     }
   };
 
-  const onSignUp = async (values: z.infer<typeof authSchema>) => {
+  const onSignUp = async (values: AuthFormValues) => {
     try {
       setIsLoading(true);
       const { error } = await supabase.auth.signUp({
@@ -200,7 +206,7 @@ export default function Auth() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>I am a</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange as (value: string) => void} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Select your role" />
